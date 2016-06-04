@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "S3method(ggEffect,default)\nS3method(ggEffect,formula)\nS3method(ggEffect,lm)\nS3method(ggAncova,default)\nS3method(ggAncova,lm)\nS3method(ggAncova,formula)\nexport(theme_clean)\nexport(num2cut)\nexport(summarySE)\nexport(ggSpine)\nexport(ggAncova)\nexport(ggEffect)\nexport(ggCatepillarPlot)\nexport(ggRadar)\nexport(ggDonut)\nexport(ggPieDonut)\nexport(subcolors)\n\nimportFrom(\"grDevices\", \"col2rgb\", \"rainbow\", \"rgb\")\nimportFrom(\"plyr\",\"ddply\",\"summarize\")\nimportFrom(\"reshape2\",\"melt\")\nimportFrom(\"stats\", \"as.formula\", \"lm\", \"qt\", \"quantile\", \"sd\",\"formula\")\nimportFrom(\"ggplot2\",\"ggplot\",\"aes_string\",\"aes\",\"coord_flip\",\"annotate\",\"position_dodge\",\n           \"theme_bw\",\"theme\",\"element_blank\",\"scale_fill_brewer\",\"scale_y_continuous\",\n           \"guides\",\"guide_legend\",\"xlab\",\"ylab\",\"alpha\",\"scale_x_continuous\",\"ggtitle\",\n           \"geom_errorbar\",\"coord_polar\",\"xlim\",\"ylim\",\"%+replace%\",\"theme_grey\",\"unit\",\n           \"geom_text\",\"coord_munch\",\"geom_segment\",\"ggproto\",\"expand_limits\",\n           \"element_text\",\"facet_grid\")\nimportFrom(\"ggiraph\",\"ggiraph\",\"geom_rect_interactive\",\"geom_path_interactive\",\n           \"geom_point_interactive\",\"geom_polygon_interactive\",\"geom_map_interactive\")\n",
+    "created" : 1465031925721.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "679879497",
+    "id" : "78D6CEF3",
+    "lastKnownWriteTime" : 1465057599,
+    "last_content_update" : 1465057599555,
+    "path" : "~/ownCloud/Documents/moonBook2/NAMESPACE",
+    "project_path" : "NAMESPACE",
+    "properties" : {
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_namespace"
+}
