@@ -1,6 +1,6 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
+title: "Visualization of Interaction in Multiple Regression Model with package moonBook2"
+author: "Keon-Woong Moon"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -9,36 +9,207 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+## Package installation
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+Package `moonBook` is avaiable on CRAN and github. Package `moonBook2` is available only on github. Please install moonBook2 package using the following R code.
 
-## Vignette Info
+```{r,eval=FALSE}
+install.packages("devtools")
+devtools::install_github("cardiomoon/moonBook")
+devtools::install_github("cardiomoon/moonBook2")
+```
 
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+In this vignette, I will show you how to visualize the interaction between two predictor variables. 
 
-## Styles
+1. ggAncova(): Visualization of One-way ANOVA with 1 covariate(ANCOVA)
+2. ggEffect(): Visualization of interaction bewteen two predictor variables in multiple regression model
+3. ggCatepillar(): Visualization of interaction between two independent (one or two categorical) variables
 
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
+## ggAncova()
 
-    output:
-      rmarkdown::html_vignette:
-        css: mystyles.css
+In ANCOVA model, there are one categorical variable with one continuous variable(covariate). With `mtcars` data, we can make a ANCOVA model in which the mpg(mile per gallon) is a response variable and the wt(weight) and the number of cylinders(cyl) are explanatory variables. The number of cylinders are recorded as number. To make a ANCOVA model, we make a new categorical variable cyl1.
 
-## Figures
+```{r,comment=NA}
+mtcars$engine=factor(mtcars$cyl)
+```
 
-The figure sizes have been customised so that you can easily put two images side-by-side.
+You can easily calculate the mean and SD of mpg by engine.
+```{r,message=FALSE,comment=NA}
+
+require(moonBook)
+require(moonBook2)
+require(ggplot2)
+summarySE(mtcars,"mpg","engine")
+```
+
+The summarySE() function is made by slight modification of summarySE() function in "R graphics cookbook" by Winston Chang. You can make plot comparing the average of three groups.
+
+```{r,comment=NA}
+str(mtcars)
+ggCatepillar(mpg~engine,data=mtcars,interactive=TRUE)
+```
+
+```{r,comment=NA}
+fit=lm(mpg~wt+engine,data=mtcars)
+summary(fit)
+```
+
+In summary, we can obtain regression equation for engine 4,6 and 8.
+
+```
+engine4 : mpg = -3.2056*wt+33.9908
+engine6 : mpg = -3.2056*wt+33.9908-4.2556
+engine8 : mpg = -3.2056*wt+33.9908-6.0709
+```
+
+We can easly visualize this model with ggAncova() function.
+
+```{r,message=FALSE}
+
+ggAncova(fit,interactive=TRUE)
+```
+
 
 ```{r}
-require(moonBook2)
-
-fit=lm(mpg~wt+cyl,data=mtcars)
-
-ggAncova(mpg~wt+cyl,data=mtcars)
-ggAncova(mtcars,"mpg","wt","cyl")
-ggAncova(fit)
-
-ggEffect(mpg~wt*hp,data=mtcars)
+ggAncova(mpg~wt+engine,data=mtcars,interactive=TRUE)
 ```
+
+If you are not familiar with the formula, You can enter data and variables in order. If you enter two continuous variables as explanatory variables, the last one is converted into categorical variable and make the ANCOVA plot.
+
+```{r}
+ggAncova(mtcars,mpg,wt,cyl,interactive=TRUE)
+```
+
+In radial data in moonBook package, the degree of atherosclerosis are measured as the normalized total atheroma volume(NTAV). With this data we can make an ANCOVA model in which age and sex are used as explanatory variables.
+```{r}
+ggAncova(NTAV~age+sex,data=radial,interactive=TRUE)
+```
+
+As you can see, the NTAV is increasing with age in both sex, but men have larger NTAV thae women.
+
+
+## ggEffect() : Multiple linear regression with interaction
+
+One of the most interesting research findings are those involving interactions among predictor variables. If you are interested in th impact of horse power and automoble weight on mileage, you can fit a regression model with the following formula.
+
+```{r,comment=NA}
+fit2=lm(mpg~hp*wt,data=mtcars)
+summary(fit2)
+```
+
+In formula, A*B is interpreted as A + B + A:B. A:B is the interaction of A and B.
+The relationship between mileage(mpg) and horse power(hp) varies by car weight(wt).
+The quantile of weight are as follows.
+```{r,comment=NA}
+summary(mtcars$wt)
+```
+The minimal value of weight is 1.513 and th maimal value of weight is 5.424. The regression equation between mpg and wt varies with hp. If the coefficients were rounded to the decimal point two digits, the regression equation is as follows
+
+```
+mpg=49.81 - 0.12 * hp- 8.22 * wt + 0.03 * hp * wt 
+```
+
+If the weight is 3.2(mean), the regression equation will be:
+
+```
+mpg=49.81-0.12 * hp - 8.22 * 3.2 + 0.03 * hp * 3.2 
+
+mpg=23.51 - 0.03 * hp 
+```
+
+You can calculate the regression slope and y intercept with the mean of weight(3.2) and one standard deviation below and above the maen(2.2,and 4.2 respectively) as follows:
+
+```{r,comment=NA}
+A<-c(2.2,3.2,4.2)        
+coef<-fit2$coef
+labels=as.character(A)
+intercept=coef[1]+coef[2]*A
+slope=coef[3]+coef[4]*A
+intercept
+slope
+```
+
+With ggEffect() function, you can visualize this interaction easily.
+```{r}
+ggEffect(mpg~hp*wt,data=mtcars,interactive=TRUE)
+```
+
+By default, three regression lines are displayed at c(0.10,0.5,0.9) percentiles. You can get other regression lines by changing the probs parameter.
+```{r}
+ggEffect(mpg~hp*wt,data=mtcars,probs=c(0.2,0.4,0.6,0.8),interactive=TRUE)
+```
+
+You can get regression lines with the desired value. If you wanted to get regression lines with weight 2.2,3.2 and 4.2, try this :
+```{r}
+ggEffect(mpg~hp*wt,data=mtcars,xvalue=c(2.2,3.2,4.2),interactive=TRUE)
+```
+
+You can use the ggEffect() function with categorical variables. You can see the impact of intweraction between aging and smoking status on the progression of atherosclerosis, try this:
+```{r}
+ggEffect(NTAV~age*smoking,data=radial,interactive=TRUE)
+```
+
+You can clearly see that the atheroscerosis progresses rapidly among smokers. 
+
+## Two-way ANOVA
+
+Another interesting examples comes from acs data(moonBook package). In acs data, 857 patients with acute coronary syndrome(acs) were enrolled. If you are interested the age of disease onset and diabetes and smoking status, you can summarize the onset of age grouped by smoking and DM status as follows.
+```{r,comment=NA}
+summarySE(acs,"age",c("DM","smoking"))
+```
+You can visualize this as follows:
+```{r}
+ggEffect(age~DM*smoking,data=acs,interactive=TRUE)
+ggEffect(age~DM*smoking,data=acs,x=2,interactive=TRUE)
+```
+You can perform two-way ANOVA with interaction.
+```{r,comment=NA}
+fit=aov(age~DM*smoking,data=acs)
+summary(fit)
+```
+
+In the two-way ANOVA, the impact of smoking status is significant, whereas the impacts of DM status and the interaction between DM and smoking are insignificant. You can perform multiple comparison by computinig Tukey Honest Significant Differences.
+
+```{r,comment=NA}
+result=TukeyHSD(fit)
+result
+```
+
+You can visualize the result with ggHSD() function. Because the result of HSD test in thsi case is a list of length 3, you can select the second list. 
+
+```{r}
+ggHSD(result,2,interactive=TRUE)
+```
+
+Followings are othe examples of ggEffect()
+```{r}
+ggEffect(age~Dx*sex,data=acs,interactive=TRUE)
+```
+
+As you can see, male patient with acs are younger than female patient with acs
+
+This plot is identical with the following plot
+```{r}
+ggCatepillar(age~Dx+sex,data=acs,interactive=TRUE)
+```
+
+## How to save the plots
+
+The static plots(default: interactive=FALSE) are standard ggplots. You can save the plots with ggsave() function. You can make a static plot *interactive* by ggiraph() function. Interactive plots are htmlwidgets. You can save the plot with htmlwidgets::saveWidget() function.
+
+```{r,eval=FALSE}
+p<-ggCatepillar(age~Dx+sex,data=acs)
+ggsave("ggCatepillar.pdf",p)
+
+p1<-ggiraph(code=print(p))
+require(htmlwidgets)
+saveWidget(p1,"ggCatepillar.html")
+```
+
+Alternatively, you can make a interactive plot by setting the parameter interactive=TRUE. In this case, you can save as html file with saveWidget() function.
+```{r,eval=FALSE}
+p2<-ggEffect(NTAV~age*smoking,data=radial,interactive=TRUE)
+saveWidget(p2,"ggEffect.html")
+```
+
+

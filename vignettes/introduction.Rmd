@@ -1,5 +1,5 @@
 ---
-title: "Introduction of moonBook2(1)"
+title: "Introduction of package moonBook2(1)"
 author: "Keon-Woong Moon"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -9,7 +9,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This package contains several functions make interactive plots with ggplot2 and ggiraph package.
+This package contains several functions for interactive plots with ggplot2 and ggiraph package.
 
 ## ggSpine() : Interactive mosaic plot and spinogram
 
@@ -101,4 +101,13 @@ ggPieDonut(acs,"Dx","smoking",interactive=TRUE)
 ```
 ```{r,message=FALSE,comment=NA,warning=FALSE}
 ggPieDonut(mtcars,"cyl","carb",labelposition=0,interactive=TRUE)
+```
+
+
+## ggDount() : Make a Donut plot
+
+```{r,message=FALSE,comment=NA,warning=FALSE}
+ggDonut(browsers,donuts="version",count="share",interactive=TRUE)
+ggDonut(browsers,version,count="share",labelposition=0,interactive=TRUE)
+ggDonut(acs,Dx,interactive=TRUE)
 ```

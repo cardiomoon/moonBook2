@@ -179,6 +179,8 @@ ggDonut=function(data=acs,donuts="Dx",count=NULL,
                  addDonutLabel=TRUE,showRatio=TRUE,
                  polar=TRUE,labelposition=1,title="",
                  interactive=FALSE){
+
+        donuts=as.character(substitute(donuts))
         if(is.null(count)){
                 dat1=ddply(data,donuts,nrow)
                 colnames(dat1)[2]="n"

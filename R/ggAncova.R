@@ -12,6 +12,42 @@ pastecolon=function(...){
 
 #'Make an interactive catepillar plot
 #'
+#'@param x An R object to ggCatepillar
+ggCatepillar<- function(x,...) UseMethod("ggCatepillar")
+
+
+#'@describeIn ggCatepillar
+#'Make an interactive catepillar plot
+#'
+#'@param formula A formula of type y ~ x + A
+#'@param data A data
+#'@examples
+#'
+ggCatepillar.formula=function(formula,data,interactive=FALSE,digits=1){
+    m <- match.call(expand.dots = FALSE)
+    m <- m[c(1L, match(c("formula", "data", "subset"), names(m),
+                       0L))]
+    m[[1L]] <- quote(stats::model.frame)
+    mf <- eval.parent(m)
+    if (NCOL(mf) > 3L)
+        stop("'formula' should specify three variables at most")
+    y <- mf[, 1L]
+    if (!is.numeric(y))
+        stop("dependent variable should be a continuous variable")
+    #print(names(mf))
+    y=names(mf)[1]
+    x=names(mf)[2]
+    if(NCOL(mf) == 3L) {
+        group=names(mf)[3]
+        ggCatepillar.default(data,y,x,group,interactive=interactive,digits=digits)
+    } else{
+        ggCatepillar.default(data,y,x,interactive=interactive,digits=digits)
+    }
+}
+
+#'@describeIn ggCatepillar
+#'Make an interactive catepillar plot
+#'
 #'@param df A data.frame
 #'@param A A character string of "numeric" column name be used as a y-axis variable
 #'@param B A character string of column name be used as a grouping variable. Default value os NULL
@@ -20,14 +56,25 @@ pastecolon=function(...){
 #'@param digits An integer indicating the number of decimal places
 #'
 #'@return Ain interactive catepillar plot
-ggCatepillarPlot=function(df,A,B=NULL,C,interactive=FALSE,digits=1){
+#'
+ggCatepillar.default=function(df,y,x,group=NULL,interactive=FALSE,digits=1){
+    A=y
+    B=group
+    C=x
     if(is.null(B)){
         dat=summarySE(df,A,C)
+        dat$tooltip=""
+        dat$label=paste0(dat[[C]],"<br>",round(dat[[A]],digits))
     } else if(B=="None") {
         dat=summarySE(df,A,C)
+        dat$tooltip=""
+        dat$label=paste0(dat[[C]],"<br>",round(dat[[A]],digits))
     } else {
         dat=summarySE(df,A,c(B,C))
         dat[[B]]=factor(dat[[B]])
+        dat$tooltip=dat[[B]]
+        dat$label=paste0(dat[[B]],"<br>",dat[[C]],"<br>",round(dat[[A]],digits))
+
     }
     if(length(C)>1){
         temp=Reduce(paste0,C)
@@ -36,8 +83,9 @@ ggCatepillarPlot=function(df,A,B=NULL,C,interactive=FALSE,digits=1){
         dat[[C]]=factor(dat[[C]])
     }
     #dat
-    dat$tooltip=dat[[B]]
-    dat$label=paste0(dat[[B]],"<br>",dat[[C]],"<br>",round(dat[[A]],digits))
+
+    #dat$tooltip=dat[[B]]
+    #dat$label=paste0(dat[[B]],"<br>",dat[[C]],"<br>",round(dat[[A]],digits))
     dat$id=1:nrow(dat)
 
     #print(dat)
@@ -184,7 +232,7 @@ ggEffect.lm<-function(fit,
     if(is.numeric(df[[2]])) count=count+1
     if(is.numeric(df[[3]])) count=count+2
     if(count==0){
-        p<-ggCatepillarPlot(df,name[1],name[1+x],name[4-x])
+        p<-ggCatepillar(df,name[1],name[1+x],name[4-x])
     } else if(count<3){
         if(use.rownames) {
             df$label=rownames(df)
@@ -290,7 +338,7 @@ ggEffect.lm<-function(fit,
 #'@param ... additional arguments passed to the generic function
 ggAncova=function(x,...) UseMethod("ggAncova")
 
-#'Make an interactive plot for an ANCOVA model
+#'@describeIn ggAncova Make an interactive plot for an ANCOVA model
 #'
 #'@param data a data.frame
 #'@param y A character string of "continuous" column name be assigned to a response variable.
@@ -308,7 +356,7 @@ ggAncova.default=function(data,y,x,A,label=NULL,digits=1,interactive=FALSE){
 }
 
 
-#'Make an interactive plot for an ANCOVA model
+#'@describeIn ggAncova Make an interactive plot for an ANCOVA model
 #'
 #'@param formula A formula
 #'@param data a data.frame
@@ -340,17 +388,14 @@ ggAncova.formula=function(formula,data,label=NULL,digits=1,interactive=FALSE){
         print("only one independent variable and one covariate are allowed")
         return
     }
-    ggAncova.lm(fit,label=NULL,digits=1,interactive=FALSE)
+    ggAncova.lm(fit,label=label,digits=digits,interactive=interactive)
 
 }
 
 
-#'Make an interactive plot for an ANCOVA model
+#'@describeIn ggAncova Make an interactive plot for an ANCOVA model
 #'
 #'@param fit An object of class "lm"
-#'@param label A character string of column name be assigned to the label
-#'@param digits integer indicating the number of decimal places
-#'@param interactive A logical value. If TRUE, an interactive plot will be returned
 ggAncova.lm=function(fit,label=NULL,digits=1,interactive=FALSE){
 
     # print(df)
