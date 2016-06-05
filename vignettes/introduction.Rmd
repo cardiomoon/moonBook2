@@ -11,6 +11,17 @@ vignette: >
 
 This package contains several functions for interactive plots with ggplot2 and ggiraph package.
 
+
+## Package installation
+
+Package `moonBook` is avaiable on CRAN and github. Package `moonBook2` is available only on github. Please install moonBook2 package using the following R code.
+
+```{r,eval=FALSE}
+install.packages("devtools")
+devtools::install_github("cardiomoon/moonBook")
+devtools::install_github("cardiomoon/moonBook2")
+```
+
 ## ggSpine() : Interactive mosaic plot and spinogram
 
 This function is a extension of graphics::spineplot() function. This function draws a proportional stacked barplot with variable width. 
