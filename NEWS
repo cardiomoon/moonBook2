@@ -14,4 +14,4 @@ moonBook2 0.1.0
 * new function "ggAncova", "ggCatepillar", "ggBidirectional Bar", "ggDonut", "ggEffect",
   "ggHSD", "ggPieDonut", "ggRadar", "ggSpine" and "Poppyramid" added
 
-* new data "rose", "borwsers" added
+* new data "rose", "browsers" added
