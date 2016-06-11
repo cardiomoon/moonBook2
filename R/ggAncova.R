@@ -19,18 +19,17 @@ ggCatepillar<- function(x,...) UseMethod("ggCatepillar")
 #'@describeIn ggCatepillar
 #'Make an interactive catepillar plot
 #'
-#'@param formula A formula of type y ~ x + A
+#'@param x A formula of type y ~ x + A
 #'@param data A data
-#'@examples
-#'
-ggCatepillar.formula=function(formula,data,interactive=FALSE,digits=1){
+ggCatepillar.formula=function(x,data,...){
+    formula<-x
     m <- match.call(expand.dots = FALSE)
     m <- m[c(1L, match(c("formula", "data", "subset"), names(m),
                        0L))]
     m[[1L]] <- quote(stats::model.frame)
     mf <- eval.parent(m)
-    if (NCOL(mf) > 3L)
-        stop("'formula' should specify three variables at most")
+    # if (NCOL(mf) > 3L)
+    #     stop("'formula' should specify three variables at most")
     y <- mf[, 1L]
     if (!is.numeric(y))
         stop("dependent variable should be a continuous variable")
@@ -39,28 +38,29 @@ ggCatepillar.formula=function(formula,data,interactive=FALSE,digits=1){
     x=names(mf)[2]
     if(NCOL(mf) == 3L) {
         group=names(mf)[3]
-        ggCatepillar.default(data,y,x,group,interactive=interactive,digits=digits)
+        ggCatepillar.default(data,y,x,group,...)
     } else{
-        ggCatepillar.default(data,y,x,interactive=interactive,digits=digits)
+        ggCatepillar.default(data,y,x,...)
     }
 }
 
 #'@describeIn ggCatepillar
 #'Make an interactive catepillar plot
 #'
-#'@param df A data.frame
-#'@param A A character string of "numeric" column name be used as a y-axis variable
-#'@param B A character string of column name be used as a grouping variable. Default value os NULL
-#'@param C A character string of column name be used as a x-axis variable
+#'@param x A data.frame
+#'@param yvar A character string of "numeric" column name be used as a y-axis variable
+#'@param xvar A character string of column name be used as a grouping variable. Default value os NULL
+#'@param group A character string of column name be used as a x-axis variable
 #'@param interactive A logical value. If TRUE, an interactive plot will be returned
 #'@param digits An integer indicating the number of decimal places
 #'
-#'@return Ain interactive catepillar plot
+#'@return An interactive catepillar plot
 #'
-ggCatepillar.default=function(df,y,x,group=NULL,interactive=FALSE,digits=1){
-    A=y
+ggCatepillar.default=function(x,yvar,xvar,group=NULL,interactive=FALSE,digits=1){
+    df<-x
+    A=yvar
     B=group
-    C=x
+    C=xvar
     if(is.null(B)){
         dat=summarySE(df,A,C)
         dat$tooltip=""
@@ -119,82 +119,58 @@ ggCatepillar.default=function(df,y,x,group=NULL,interactive=FALSE,digits=1){
 #'
 #'Visualize the effect of interaction between two continuous independent variables on a response variable
 #'
-#'@param z Object to ggEffect
+#'@param x Object to ggEffect
 #'@param ... additional arguments passed to the generic function
-ggEffect <- function(z,...) UseMethod("ggEffect")
+ggEffect <- function(x,...) UseMethod("ggEffect")
 
 
 #'@describeIn ggEffect Visualize the effect of interaction between two continuous independent variables on a response variable
 #'
-#'@param y A name of response variable
+#'@param x A name of response variable
 #'@param x1 A name of one of the independent variable
 #'@param x2 A name of the other independent variable
-#'@param x An integer(1 or 2) indicating which independent variable is used as x-axis variable
-#'@param probs A vector of probability weights for obtaining the elements of the vector being sampled.Default value is c(0.10,0.5,0.90)
-#'@param point A logical value. If TRUE, draw points
-#'@param xvalue A numeric vector
-#'@param digits An integer indicating the number of decimal places
-#'@param use.rownames If TRUE, use rownames in label
-#'@param interactive A logical value. If TRUE, an interactive plot will be returned
 #'
 #'@return An interactive plot showing interaction
-ggEffect.default <-function(z,y,x1,x2,
-                          x=1,
-                          probs=c(0.10,0.5,0.90),
-                          point=TRUE,
-                          xvalue=NULL,
-                          digits=1,
-                          use.rownames=FALSE,
-                          interactive=FALSE) {
+ggEffect.default <-function(x,y,x1,x2,...) {
 
     y=as.character(substitute(y))
     x1=as.character(substitute(x1))
     x2=as.character(substitute(x2))
     formula=as.formula(paste(y,"~",x1,"*",x2))
-    ggEffect.formula(formula,z,x=x,probs=probs,point=point,xvalue=xvalue,
-                     digits=digits,use.rownames=use.rownames,interactive=interactive)
+    ggEffect.formula(formula,x,...)
 }
 
 
 #'@describeIn ggEffect Visualize the effect of interaction between two continuous independent variables on a response variable
 #'
-#'@param form A formula
+#'@param x A formula
 #'@param data A data
 #'@examples
 #'#data(mtcars)
 #'#fit=lm(mpg~wt*hp,data=mtcars)
 #'#ggEffect(fit,use.rownames=TRUE)
-#'#ggEffect(fit,x=2)
+#'#ggEffect(fit,no=2)
 #'#require(moonBook)
 #'#fit2=lm(NTAV~age*smoking,data=radial)
 #'#ggEffect(fit2)
 #'#fit3=lm(age~sex*smoking,data=acs)
 #'#ggEffect(fit3,interactive=TRUE)
-ggEffect.formula <-function(form,data,
-                          x=1,
-                          probs=c(0.10,0.5,0.90),
-                          point=TRUE,
-                          xvalue=NULL,
-                          digits=1,
-                          use.rownames=FALSE,
-                          interactive=FALSE){
+ggEffect.formula <-function(x,data,...){
 
     # print(df)
-
+    formula<-x
     df=data
-    fit=lm(form,data=data)
+    fit=lm(formula,data=data)
     if(length(names(fit$model))!=3) {
         print("two independent variables are allowed")
         return
     }
-    ggEffect.lm(fit,x=x,probs=probs,point=point,xvalue=xvalue,
-                digits=digits,use.rownames=use.rownames,interactive=interactive)
+    ggEffect.lm(fit,...)
 
 }
 
 #'Visualize the effect of interaction between two continuous independent variables on a response variable
 #'
-#'@param fit an object of class "lm"
 #'@param x An integer(1 or 2) indicating which independent variable is used as x-axis variable
 #'@param probs A vector of probability weights for obtaining the elements of the vector being sampled.Default value is c(0.10,0.5,0.90)
 #'@param point A logical value. If TRUE, draw points
@@ -209,14 +185,14 @@ ggEffect.formula <-function(form,data,
 #'fit=lm(mpg~wt*hp,data=mtcars)
 #'#ggEffect(fit,use.rownames=TRUE)
 #'#ggEffect(fit,use.rownames=TRUE,interactive=TRUE)
-#'#ggEffect(fit,x=2)
+#'#ggEffect(fit,no=2)
 #'#require(moonBook)
 #'#fit2=lm(NTAV~age*smoking,data=radial)
 #'#ggEffect(fit2,interactive=TRUE)
 #'#fit3=lm(age~sex*smoking,data=acs)
 #'#ggEffect(fit3,interactive=TRUE)
-ggEffect.lm<-function(fit,
-                  x=1,
+ggEffect.lm<-function(x,
+                  no=1,
                   probs=c(0.10,0.5,0.90),
                   point=TRUE,
                   xvalue=NULL,
@@ -224,7 +200,7 @@ ggEffect.lm<-function(fit,
                   use.rownames=FALSE,
                   interactive=FALSE)
     {
-
+    fit<-x
     df=fit$model
     coef=fit$coef
     name=colnames(df)
@@ -232,11 +208,11 @@ ggEffect.lm<-function(fit,
     if(is.numeric(df[[2]])) count=count+1
     if(is.numeric(df[[3]])) count=count+2
     if(count==0){
-        p<-ggCatepillar(df,name[1],name[1+x],name[4-x])
+        p<-ggCatepillar(df,name[1],name[1+no],name[4-no])
     } else if(count<3){
         if(use.rownames) {
             df$label=rownames(df)
-        } else df$label=paste0(name[1+x],"=",round(df[[name[1+x]]],digits),"<br>",
+        } else df$label=paste0(name[1+no],"=",round(df[[name[1+no]]],digits),"<br>",
                              name[1],"=",round(df[[name[1]]],digits))
         df$data_id=1:nrow(df)
         # str(df)
@@ -284,19 +260,19 @@ ggEffect.lm<-function(fit,
         #     geom_point_interactive(aes(tooltip=label,data_id=data_id))
         # p1
     } else {
-        (z=name[4-x])
+        (z=name[4-no])
         if(use.rownames) df$label=rownames(df)
-        else df$label=paste0(name[1+x],"=",df[[name[1+x]]],"<br>",name[1],"=",df[[name[1]]])
+        else df$label=paste0(name[1+no],"=",df[[name[1+no]]],"<br>",name[1],"=",df[[name[1]]])
         df$data_id=1:nrow(df)
         # print(df)
         if(is.null(xvalue)) {
-            A=quantile(df[[4-x]],probs,na.rm=TRUE)
+            A=quantile(df[[4-no]],probs,na.rm=TRUE)
         } else A=xvalue
         count=length(A)
         labels=as.character(A)
-        intercept=coef[1]+coef[4-x]*A
-        slope=coef[1+x]+coef[4]*A
-        xvar=df[[name[1+x]]]
+        intercept=coef[1]+coef[4-no]*A
+        slope=coef[1+no]+coef[4]*A
+        xvar=df[[name[1+no]]]
         xmin=rep(min(xvar),count)
         xmax=rep(max(xvar),count)
         ymin=xmin*slope+intercept
@@ -319,7 +295,7 @@ ggEffect.lm<-function(fit,
         # name
         #df
         #str(df)
-        p<-ggplot(data=df,aes_string(x=name[1+x],y=name[1],tooltip="label",
+        p<-ggplot(data=df,aes_string(x=name[1+no],y=name[1],tooltip="label",
                                      data_id="data_id"))+
             geom_path_interactive(data=df2,
                                   aes_string(x="x",y="y",tooltip="tooltip",data_id="data_id",color=z))
@@ -339,34 +315,26 @@ ggEffect.lm<-function(fit,
 ggAncova=function(x,...) UseMethod("ggAncova")
 
 #'@describeIn ggAncova Make an interactive plot for an ANCOVA model
-#'
-#'@param data a data.frame
-#'@param y A character string of "continuous" column name be assigned to a response variable.
-#'@param x A character string of "continuous" column name be assigned to a covariate.
+#'@param yvar A character string of "continuous" column name be assigned to a response variable.
+#'@param xvar A character string of "continuous" column name be assigned to a covariate.
 #'@param A A character string of column name be assigned to a grouping variable.
-#'@param label A character string of column name be assigned to the label
-#'@param digits integer indicating the number of decimal places
-#'@param interactive A logical value. If TRUE, an interactive plot will be returned
-ggAncova.default=function(data,y,x,A,label=NULL,digits=1,interactive=FALSE){
-    y=as.character(substitute(y))
-    x=as.character(substitute(x))
+ggAncova.default=function(x,yvar,xvar,A,...){
+    data<-x
+    yvar=as.character(substitute(yvar))
+    xvar=as.character(substitute(xvar))
     A=as.character(substitute(A))
-    formula=as.formula(paste(y,"~",x,"+",A))
-    ggAncova.formula(formula,data,label=label,digits=digits,interactive=interactive)
+    formula=as.formula(paste(yvar,"~",xvar,"+",A))
+    ggAncova.formula(formula,data,...)
 }
 
 
 #'@describeIn ggAncova Make an interactive plot for an ANCOVA model
 #'
-#'@param formula A formula
 #'@param data a data.frame
-#'@param label A character string of column name be assigned to the label
-#'@param digits integer indicating the number of decimal places
-#'@param interactive A logical value. If TRUE, an interactive plot will be returned
-ggAncova.formula=function(formula,data,label=NULL,digits=1,interactive=FALSE){
+ggAncova.formula=function(x,data,...){
 
     # print(df)
-
+    formula <- x
     df=data
     fit=lm(formula,data=df)
     #summary(fit)
@@ -383,23 +351,26 @@ ggAncova.formula=function(formula,data,label=NULL,digits=1,interactive=FALSE){
         x=temp
     } else if((is.numeric(df[[x]])) &(is.numeric(df[[A]]))){
         df[[A]]=factor(df[[A]])
-        return(ggAncova.formula(formula,df,label=label,digits=digits,interactive=interactive))
+        return(ggAncova.formula(formula,df,...))
     } else if((!is.numeric(df[[x]])) &(!is.numeric(df[[A]]))){
         print("only one independent variable and one covariate are allowed")
         return
     }
-    ggAncova.lm(fit,label=label,digits=digits,interactive=interactive)
+    ggAncova.lm(fit,...)
 
 }
 
 
 #'@describeIn ggAncova Make an interactive plot for an ANCOVA model
 #'
-#'@param fit An object of class "lm"
-ggAncova.lm=function(fit,label=NULL,digits=1,interactive=FALSE){
+#'@param x An object of class "lm"
+#'@param label A character string of column name be assigned to the label
+#'@param digits An integer indicating the number of decimal places
+#'@param interactive A logical value. If TRUE, an interactive plot will be returned
+ggAncova.lm=function(x,label=NULL,digits=1,interactive=FALSE){
 
     # print(df)
-
+    fit<-x
     df=fit$model
     #summary(fit)
     if(length(names(fit$model))!=3) {
@@ -455,28 +426,17 @@ ggAncova.lm=function(fit,label=NULL,digits=1,interactive=FALSE){
     df2$data_id=1:nrow(df2)
     # print(df2)
 
-    p<-ggplot(data=df,aes_string(x=x,y=y,colour="colour",fill=A,tooltip="label",data_id="data_id"))+
-        geom_point_interactive()+
+    p<-ggplot(data=df,aes_string(x=x,y=y,colour="colour",fill=A))+
+        geom_point_interactive(aes_string(tooltip="label",data_id="data_id"))+
         facet_grid(as.formula(paste(".~",A)),margins=TRUE)+
         guides(colour=FALSE,fill=FALSE,linetype=FALSE)+
         #geom_abline(data=df1,aes_string(slope="slope",intercept="intercept",
         #                                colour="colour",linetype="colour"))
-        geom_path_interactive(data=df2,aes(color=color,tooltip=tooltip,data_id=data_id,linetype=color))
+        geom_path_interactive(data=df2,aes(colour=color,tooltip=tooltip,data_id=data_id,linetype=color))
     if(interactive) p<-ggiraph(code=print(p),
                                hover_css="r:4px;cursor:pointer;stroke-width:6px;")
     p
 
 }
 
-#
-#
-# ggAncova(mtcars,"mpg","wt","cyl")
-# ggAncova(mtcars,mpg,wt,cyl)
-# ggAncova(mpg~wt+cyl,data=mtcars)
-# mtcars$cyl1=factor(mtcars$cyl)
-# fit=lm(mpg~wt+cyl,data=mtcars)
-# ggAncova(fit)
-# require(moonBook)
-# ggAncova(radial,NTAV,age,smoking,interactive=TRUE)
-# fit=lm(NTAV~age+DM,data=radial)
-# ggAncova(fit,interactive=TRUE)
+

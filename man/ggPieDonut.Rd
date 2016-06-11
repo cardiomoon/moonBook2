@@ -47,9 +47,8 @@ Draw a Pie and Donut plot
 #p<-ggPieDonut(mtcars,"am","cyl")
 #ggiraph(code=print(p))
 #ggPieDonut(polar=FALSE)
-#ggPieDonut(labelposition=0)
-#ggPieDonut(interactive=TRUE)
 #ggPieDonut(mtcars,"cyl","am")
-#ggPieDonut(browsers,"browser","version","share", title="Browser market share 2011",interactive=TRUE)
+#ggPieDonut(browsers,"browser","version","share",
+#  title="Browser market share 2011",interactive=TRUE)
 }
 

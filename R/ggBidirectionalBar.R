@@ -32,9 +32,9 @@ human_numbers <- function(x = NULL, smbl ="", allpos = FALSE){
 
         if (!is.na(y)){
 
-            b <- plyr::round_any(abs(y) / 1e9, 0.1)
-            m <- plyr::round_any(abs(y) / 1e6, 0.1)
-            k <- plyr::round_any(abs(y) / 1e3, 0.1)
+            b <- round_any(abs(y) / 1e9, 0.1)
+            m <- round_any(abs(y) / 1e6, 0.1)
+            k <- round_any(abs(y) / 1e3, 0.1)
 
             if ( y >= 0 ){
                 y_is_positive <- ""
@@ -98,7 +98,7 @@ get_popdata <- function(country, year) {
         c1 <- "http://www.census.gov/population/international/data/idb/region.php?N=%20Results%20&T=10&A=separate&RT=0&Y="
         c2 <- "&R=-1&C="
         url <- paste0(c1, year, c2, country)
-        df <- data.frame(XML::readHTMLTable(url))
+        df <- data.frame(readHTMLTable(url))
         keep <- c(2, 4, 5)
         df <- df[,keep]
         names(df) <- c("Age", "Male", "Female")
@@ -129,18 +129,18 @@ ggBidirectionalBar=function(data,left=NULL,right=NULL,label=NULL,
 
     data[[left]] <- -1 * data[[left]]
     data[[label]] <- factor(data[[label]],levels=data[[label]])
-    longdf <- reshape2::melt(data,id.vars=label )
+    longdf <- melt(data,id.vars=label )
     longdf$xmin=as.numeric(longdf[[label]])-0.95
     longdf$xmax=as.numeric(longdf[[label]])-0.05
     longdf$id=as.character(1:nrow(longdf))
     longdf$tooltip=paste0(longdf$variable,"(",longdf[[label]],")",abs(longdf$value))
 
 
-            p<-ggplot2::ggplot(longdf, ggplot2::aes_string(xmin="xmin",xmax="xmax"
+            p<-ggplot(longdf, aes_string(xmin="xmin",xmax="xmax"
                                          ,ymin="0",ymax = "value", fill = "variable",
                                          tooltip="tooltip",data_id="id")) +
-                ggiraph::geom_rect_interactive(data=subset(longdf, variable == right), stat = "identity",alpha=0.7)+
-                ggiraph::geom_rect_interactive(aes(ymin=value,ymax=0),data=subset(longdf, variable == left), stat = "identity",alpha=0.7)+
+                geom_rect_interactive(data=subset(longdf, variable == right), stat = "identity",alpha=0.7)+
+                geom_rect_interactive(aes(ymin=value,ymax=0),data=subset(longdf, variable == left), stat = "identity",alpha=0.7)+
                 coord_flip() +
                 scale_fill_brewer(palette = "Set1") +
                 theme_bw()+theme(legend.position=c(0.15,0.92))+

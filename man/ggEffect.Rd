@@ -6,44 +6,26 @@
 \alias{ggEffect.formula}
 \title{ggEffect generic}
 \usage{
-ggEffect(z, ...)
+ggEffect(x, ...)
 
-\method{ggEffect}{default}(z, y, x1, x2, x = 1, probs = c(0.1, 0.5, 0.9),
-  point = TRUE, xvalue = NULL, digits = 1, use.rownames = FALSE,
-  interactive = FALSE)
+\method{ggEffect}{default}(x, y, x1, x2, ...)
 
-\method{ggEffect}{formula}(form, data, x = 1, probs = c(0.1, 0.5, 0.9),
-  point = TRUE, xvalue = NULL, digits = 1, use.rownames = FALSE,
-  interactive = FALSE)
+\method{ggEffect}{formula}(x, data, ...)
 }
 \arguments{
-\item{z}{Object to ggEffect}
+\item{x}{Object to ggEffect}
 
 \item{...}{additional arguments passed to the generic function}
-
-\item{y}{A name of response variable}
 
 \item{x1}{A name of one of the independent variable}
 
 \item{x2}{A name of the other independent variable}
 
-\item{x}{An integer(1 or 2) indicating which independent variable is used as x-axis variable}
-
-\item{probs}{A vector of probability weights for obtaining the elements of the vector being sampled.Default value is c(0.10,0.5,0.90)}
-
-\item{point}{A logical value. If TRUE, draw points}
-
-\item{xvalue}{A numeric vector}
-
-\item{digits}{An integer indicating the number of decimal places}
-
-\item{use.rownames}{If TRUE, use rownames in label}
-
-\item{interactive}{A logical value. If TRUE, an interactive plot will be returned}
-
-\item{form}{A formula}
-
 \item{data}{A data}
+
+\item{x}{A name of response variable}
+
+\item{x}{A formula}
 }
 \value{
 An interactive plot showing interaction
@@ -61,7 +43,7 @@ Visualize the effect of interaction between two continuous independent variables
 #data(mtcars)
 #fit=lm(mpg~wt*hp,data=mtcars)
 #ggEffect(fit,use.rownames=TRUE)
-#ggEffect(fit,x=2)
+#ggEffect(fit,no=2)
 #require(moonBook)
 #fit2=lm(NTAV~age*smoking,data=radial)
 #ggEffect(fit2)

@@ -4,12 +4,10 @@
 \alias{ggEffect.lm}
 \title{Visualize the effect of interaction between two continuous independent variables on a response variable}
 \usage{
-\method{ggEffect}{lm}(fit, x = 1, probs = c(0.1, 0.5, 0.9), point = TRUE,
+\method{ggEffect}{lm}(x, no = 1, probs = c(0.1, 0.5, 0.9), point = TRUE,
   xvalue = NULL, digits = 1, use.rownames = FALSE, interactive = FALSE)
 }
 \arguments{
-\item{fit}{an object of class "lm"}
-
 \item{x}{An integer(1 or 2) indicating which independent variable is used as x-axis variable}
 
 \item{probs}{A vector of probability weights for obtaining the elements of the vector being sampled.Default value is c(0.10,0.5,0.90)}
@@ -35,7 +33,7 @@ data(mtcars)
 fit=lm(mpg~wt*hp,data=mtcars)
 #ggEffect(fit,use.rownames=TRUE)
 #ggEffect(fit,use.rownames=TRUE,interactive=TRUE)
-#ggEffect(fit,x=2)
+#ggEffect(fit,no=2)
 #require(moonBook)
 #fit2=lm(NTAV~age*smoking,data=radial)
 #ggEffect(fit2,interactive=TRUE)

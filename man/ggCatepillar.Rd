@@ -8,33 +8,32 @@
 \usage{
 ggCatepillar(x, ...)
 
-\method{ggCatepillar}{formula}(formula, data, interactive = FALSE,
-  digits = 1)
+\method{ggCatepillar}{formula}(x, data, ...)
 
-\method{ggCatepillar}{default}(df, y, x, group = NULL, interactive = FALSE,
-  digits = 1)
+\method{ggCatepillar}{default}(x, yvar, xvar, group = NULL,
+  interactive = FALSE, digits = 1)
 }
 \arguments{
 \item{x}{An R object to ggCatepillar}
 
-\item{formula}{A formula of type y ~ x + A}
-
 \item{data}{A data}
+
+\item{yvar}{A character string of "numeric" column name be used as a y-axis variable}
+
+\item{xvar}{A character string of column name be used as a grouping variable. Default value os NULL}
+
+\item{group}{A character string of column name be used as a x-axis variable}
 
 \item{interactive}{A logical value. If TRUE, an interactive plot will be returned}
 
 \item{digits}{An integer indicating the number of decimal places}
 
-\item{df}{A data.frame}
+\item{x}{A formula of type y ~ x + A}
 
-\item{A}{A character string of "numeric" column name be used as a y-axis variable}
-
-\item{B}{A character string of column name be used as a grouping variable. Default value os NULL}
-
-\item{C}{A character string of column name be used as a x-axis variable}
+\item{x}{A data.frame}
 }
 \value{
-Ain interactive catepillar plot
+An interactive catepillar plot
 }
 \description{
 Make an interactive catepillar plot
@@ -45,7 +44,4 @@ Make an interactive catepillar plot
 
 \item \code{default}: Make an interactive catepillar plot
 }}
-\examples{
-
-}
 

@@ -1,8 +1,3 @@
-require(ggplot2)
-require(plyr)
-require(moonBook)
-require(ggiraph)
-
 #'Browser market share 2011
 #'
 #'A phony dataset measuring browser market share
@@ -27,6 +22,21 @@ require(ggiraph)
 #'}
 "rose"
 
+
+#' Taco ratings by age group
+#'
+#' Taco ratings by ShellType, AgeGroup and Filling
+#' source: \href{http://rikturr.com/blog/communicating-experimental-results-with-r/}{Communicating experiment results with R}
+#'
+#'  @format A data.frame with 136 rows and 4 columns
+#'  \describe{
+#'     \item{ShellType}{Hard or Soft}
+#'     \item{Fillings}{Fillings of taco}
+#'     \item{AgeGroup}{AgeGroup One of the c("<13","13-20","21-39","40+",)
+#'     \item{Rating}{A numeric. Rating of taco}
+"taco"
+
+
 #'Draw a Pie and Donut plot
 #'@param data A data.frame
 #'@param pies A character string of column name be assigned to the Pies
@@ -48,10 +58,9 @@ require(ggiraph)
 #'#p<-ggPieDonut(mtcars,"am","cyl")
 #'#ggiraph(code=print(p))
 #'#ggPieDonut(polar=FALSE)
-#'#ggPieDonut(labelposition=0)
-#'#ggPieDonut(interactive=TRUE)
 #'#ggPieDonut(mtcars,"cyl","am")
-#'#ggPieDonut(browsers,"browser","version","share", title="Browser market share 2011",interactive=TRUE)
+#'#ggPieDonut(browsers,"browser","version","share",
+#'#  title="Browser market share 2011",interactive=TRUE)
 ggPieDonut=function(data=acs,pies="Dx",donuts="smoking",count=NULL,
                     addPieLabel=TRUE,addDonutLabel=TRUE,
                     showRatioDonut=TRUE,showRatioPie=TRUE,

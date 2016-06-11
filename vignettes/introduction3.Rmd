@@ -1,0 +1,214 @@
+---
+title: "Introduction of R package moonBook2(3)"
+author: "Keon-Woong Moon"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Package installation
+
+Package `moonBook` is avaiable on CRAN and github. Package `moonBook2` is available only on github. Please install moonBook2 package using the following R code.
+
+```{r,eval=FALSE}
+install.packages("devtools")
+devtools::install_github("cardiomoon/moonBook")
+devtools::install_github("cardiomoon/moonBook2")
+```
+
+In this vignette, I will show you how to visualize the interaction between two predictor variables. 
+
+1. PopPyramid(): get population data from internet and make a population pyramid.
+2. ggPoints(): make a scatterplot with/without regression line
+3. ggBar(): make a interactive barplot
+4. ggRose(): make a interactive Rose plot
+5. ggHeatmap(): make a interactive Rose plot
+
+
+## PopPyramid() for population pyramid
+
+You can’t make a population pyramid without data; PopPyramid() function gets population data data from US Census Bereau. This function uses get_popdata() function internally and this function is a modification of get_data() function of [Kyle Walker's](https://rpubs.com/walkerke/pyramids_ggplot2). You can use PopPyramid function with the following format.
+
+```
+PopPyramid(country,year,interactive=FALSE)
+```
+
+The country parameter shoud be one of the [FIPS 10-4 country code](https://en.wikipedia.org/wiki/List_of_FIPS_country_codes). If you wnated to make a population pyramid 2016 for Nigeria, you can use the following code.
+
+```{r,message=FALSE,warning=FALSE,comment=NA}
+require(moonBook2)
+require(ggplot2)
+require(ggiraph)
+require(moonBook)
+
+PopPyramid("NI",2016,interactive=TRUE)
+```
+   
+The followings are other examples.
+```{r,message=FALSE,warning=FALSE,comment=NA}
+PopPyramid("KS",2016,interactive=TRUE)  # for South Korea
+PopPyramid("US",2016,interactive=TRUE)  # for United States
+```
+
+
+## ggPoints() for scatterplot
+
+
+You can make interactive scatter plot by ggPoints(). You can make a scatterplot by two different ways.
+
+
+### by using column name
+```{r,message=FALSE,warning=FALSE,comment=NA,fig.width=5,fig.height=5}
+require(plotly)
+ggPoints(iris,Sepal.Width,Sepal.Length,interactive=TRUE)
+
+```
+
+You can assign a grouping variable to the colour or the fill parameter.
+
+```{r,message=FALSE,warning=FALSE,comment=NA,fig.width=5,fig.height=5}
+ggPoints(iris,Sepal.Width,Sepal.Length,colour="Species",interactive=TRUE )
+```
+
+You can remove the regression line by setting the smooth parameter 'FALSE'.
+```{r,message=FALSE,warning=FALSE,comment=NA,fig.width=5,fig.height=5}
+ggPoints(iris,Sepal.Width,Sepal.Length,colour="Species",smooth=FALSE,interactive=TRUE )
+```
+
+You can adjust the method of regression by setting the method from "auto" to other method and adjust the formula option with formula parameter.
+
+```{r,message=FALSE,warning=FALSE,comment=NA,fig.width=5,fig.height=5}
+
+ggPoints(mtcars,mpg,wt,colour="am",method="lm",formula="y~poly(x,2)",interactive=TRUE)
+```
+
+## by formula
+
+You can use formula as follows.
+
+```{r,message=FALSE,warning=FALSE,comment=NA,fig.width=5,fig.height=5}
+ggPoints(mpg~wt,data=mtcars,interactive=TRUE )
+ggPoints(mpg~wt|am,data=mtcars,interactive=TRUE )
+```
+
+
+For radial artery atherosclerosis data, you can draw scatter plot as follows.
+```{r,message=FALSE,warning=FALSE,comment=NA,fig.width=5,fig.height=5}
+require(car)
+ggPoints(salary~yrs.service|sex,data=Salaries,method="lm",formula="y~poly(x,2)",interactive=TRUE )
+```
+
+If you wanted to add another layers or options, you can make a ggplot without interactive=TRUE(the default value of interactive is FALSE) and add option(s) to the ggplot. 
+
+```{r,message=FALSE,warning=FALSE,comment=NA,fig.width=5,fig.height=5}
+require(car)
+
+p<-ggPoints(salary~yrs.service|sex,data=Salaries,method="lm",formula="y~poly(x,2)")
+p<-p+facet_wrap(~sex)
+p
+ggplotly(p)
+```
+
+## ggBar() for easy interactive barplot
+
+You can make interactive barplot by ggBar(). 
+
+```{r}
+ggBar(acs,"Dx","smoking",interactive=TRUE)
+```
+
+You can add labels to barplot easily by setting the parameter addlabel=TRUE
+```{r}
+ggBar(acs,"Dx","smoking",addlabel=TRUE,interactive=TRUE)
+ggBar(acs,"Dx","smoking",position="dodge",addlabel=TRUE,interactive=TRUE)
+ggBar(acs,"Dx","smoking",position="fill",addlabel=TRUE,interactive=TRUE)
+```
+
+You can make horizontal bar plot easily by setting the parameter horizontal=TRUE
+````{r}
+ggBar(acs,"Dx","smoking",position="fill",addlabel=TRUE,horizontal=TRUE,yangle=90,
+      width=0.5,interactive=TRUE)
+```
+
+You can make polar map by setting the parameter polar=TRUE
+```{r}
+ggBar(acs,"Dx","smoking",interactive=TRUE,width=1,colour="white",size=0.2,polar=TRUE)
+```
+
+You can make barplot from preprocessed data.
+```{r}
+ggBar(rose,Month,group,"value",stat="identity",interactive=TRUE)
+```
+
+
+## ggRose() ; for interactive Rose plot
+
+You can make rose plot by using ggBar().
+
+```{r}
+ggBar(rose,Month,group,"value",stat="identity",polar=TRUE,palette="Reds",width=1,
+       color="black",size=0.1,interactive=TRUE)
+```
+
+You can make rose plot more easily by using ggRose()
+
+```{r}
+ggRose(rose,Month,group,"value",interactive=TRUE)
+```
+
+Here comes another example of ggRose().
+```{r}
+ggRose(acs,"Dx","smoking",interactive=TRUE)
+```
+
+
+##ggHeatmap() ; for easy interactive heatmap
+
+In heatmap, you can assign a continuous variable to the `fill` color. You can make interactive heatmap by using ggHeatmap()
+
+```{r}
+ggHeatmap(acs,"Dx","smoking",interactive=TRUE)
+```
+
+You can add labels to heatmap easily by setting the parameter addlabel=TRUE
+```{r}
+ggHeatmap(acs,"Dx","smoking",addlabel=TRUE,interactive=TRUE)
+```
+
+You can make heatmap with preprocessed data.
+
+```{r}
+ggHeatmap(rose,"group","Month","value",stat="identity",interactive=TRUE)
+```        
+You can change the fill colors by seting the parameter gradient_colors() 
+```{r}
+ggHeatmap(rose,"group","Month","value",stat="identity",gradient_colors = c("white","red"),interactive=TRUE)
+```
+
+You can make polar heatmap by seting the parameter polar TRUE.
+```{r}
+ggHeatmap(rose,"Month","group","value",stat="identity",polar=TRUE,interactive=TRUE)
+```
+
+Another example comse from *taco* data. This data is made by "Aaron Richter". Please take a look at one of his wonderful post [Communicating Experimental Results with R](http://rikturr.com/blog/communicating-experimental-results-with-r/).
+
+
+```{r,comment=NA}
+head(taco)
+str(taco)
+```
+
+This data consisits of ratings of taco by shell types, age groups and filllings. You can make heatmap with this data.
+
+```{r}
+ggHeatmap(taco,"AgeGroup","Filling","Rating",stat="identity",interactive=TRUE)
+```
+
+You add facets to you heatmap.
+```{r}
+ggHeatmap(taco,"AgeGroup","Filling","Rating",facetvar="ShellType",
+          stat="identity",interactive=TRUE)
+```

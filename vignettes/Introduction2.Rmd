@@ -160,7 +160,7 @@ summarySE(acs,"age",c("DM","smoking"))
 You can visualize this as follows:
 ```{r}
 ggEffect(age~DM*smoking,data=acs,interactive=TRUE)
-ggEffect(age~DM*smoking,data=acs,x=2,interactive=TRUE)
+ggEffect(age~DM*smoking,data=acs,no=2,interactive=TRUE)
 ```
 You can perform two-way ANOVA with interaction.
 ```{r,comment=NA}
