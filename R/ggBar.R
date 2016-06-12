@@ -237,7 +237,7 @@ ggRose=function(data,xvar,fillvar,yvar="None",...,palette="Reds",color="black",s
                     ",stat='identity',width=1,color='",color,
                     "',size=",size,",palette='",palette,"',polar=TRUE,...)")
     }
-    print(temp)
+    #print(temp)
     p<-eval(parse(text=temp))
     p
 
