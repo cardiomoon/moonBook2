@@ -223,15 +223,21 @@ ggBar=function(data,xvar,fillvar,yvar=NULL,stat="count",position="stack",palette
 #'ggRose(rose,Month,group,"value",interactive=TRUE)
 #'ggBar(rose,Month,group,"value",stat="identity",polar=TRUE,palette="Reds",width=1,
 #'       color="black",size=0.1,interactive=TRUE)
-ggRose=function(data,xvar,fillvar,...,palette="Reds",color="black",size=0.1){
+ggRose=function(data,xvar,fillvar,yvar="None",...,palette="Reds",color="black",size=0.1){
 
     data=as.character(substitute(data))
     fillvar=as.character(substitute(fillvar))
     xvar=as.character(substitute(xvar))
 
+    if(yvar=="None") {
     temp=paste0("ggBar(data=",data,",xvar=",xvar,",fillvar=",fillvar,",stat='identity',width=1,color='",color,
                 "',size=",size,",palette='",palette,"',polar=TRUE,...)")
-    #print(temp)
+    } else{
+        temp=paste0("ggBar(data=",data,",xvar=",xvar,",yvar='",yvar,"',fillvar=",fillvar,
+                    ",stat='identity',width=1,color='",color,
+                    "',size=",size,",palette='",palette,"',polar=TRUE,...)")
+    }
+    print(temp)
     p<-eval(parse(text=temp))
     p
 
