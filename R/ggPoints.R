@@ -31,15 +31,17 @@ ggPoints<-function(x,...) UseMethod("ggPoints")
 #'
 #' @examples
 #'# require(ggplot2)
-#'# ggPoints(data=iris,xvar=Sepal.Length,yvar=Sepal.Width,color="Species",interactive=TRUE)
-#'# ggPoints(data=mtcars,y=mpg,x=wt,fill="factor(cyl)",pch=21,smooth=FALSE)
-#'# ggPoints(data=acs,x=height,y=weight,colour="sex",interactive=TRUE,
+#'# require(moonBook)
+#'# ggPoints(iris,xvar=Sepal.Length,yvar=Sepal.Width,colour="Species",interactive=TRUE)
+#'# ggPoints(mtcars,yvar=mpg,xvar=wt,fill="factor(cyl)",pch=21,smooth=FALSE)
+#'# ggPoints(acs,xvar=height,yvar=weight,colour="sex",interactive=TRUE,
 #'#           position="jitter",method="lm",formula=y~poly(x,2))
 ggPoints.default=function(x,xvar,yvar,colour=NULL,fill=NULL,smooth=TRUE,
                   method="auto",formula=y~x,se=TRUE,level=0.95,jitter=FALSE,
                   fullrange=FALSE,interactive=FALSE,...){
 
     data<-x
+    data$data_id=1:nrow(data)
     xvar<-as.character(substitute(xvar))
     yvar<-as.character(substitute(yvar))
 
@@ -54,8 +56,8 @@ ggPoints.default=function(x,xvar,yvar,colour=NULL,fill=NULL,smooth=TRUE,
     }
 
     p<-ggplot(data=data,mapping)
-    if(jitter) p<-p+geom_jitter(...)
-    else p<-p+ geom_point(...)
+    if(jitter) p<-p+geom_jitter(aes(text=paste0("no:",data_id)),...)
+    else p<-p+ geom_point(aes(text=paste0("no:",data_id)),...)
 
     if(smooth) p<- p+geom_smooth(method=method,formula=formula,se=se,level=0.95,fullrange=fullrange)
     if(interactive) p<-ggplotly(p)
