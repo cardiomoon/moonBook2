@@ -294,7 +294,7 @@ ggHeatmap=function(data,xvar,yvar,fillvar=NULL,facetvar=NULL,stat="count",gradie
     df$xmax=df$xno+width/2
     df$ymin=df$yno-width/2
     df$ymax=df$yno+width/2
-    df$tooltip=paste0(df[[xvar]],"<br>",df[[yvar]],"<br>",df$nrow)
+    df$tooltip=paste0(df[[xvar]],"<br>",df[[yvar]],"<br>",df[[fillvar]])
     df$data_id=as.character(1:nrow(df))
     #print(str(df))
     # write.csv(df,"df.csv",row.names=FALSE)
