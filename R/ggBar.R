@@ -281,9 +281,9 @@ ggHeatmap=function(data,xvar,yvar,fillvar=NULL,facetvar=NULL,stat="count",gradie
 
     if(stat=="count") {
         df=plyr::ddply(data,c(xvar,yvar,facetvar),"nrow")
+        fillvar="nrow"
     } else {
         df=data[c(xvar,yvar,fillvar,facetvar)]
-        colnames(df)[3]="nrow"
     }
 
     width=1
@@ -295,8 +295,14 @@ ggHeatmap=function(data,xvar,yvar,fillvar=NULL,facetvar=NULL,stat="count",gradie
     df$ymin=df$yno-width/2
     df$ymax=df$yno+width/2
     df$tooltip=paste0(df[[xvar]],"<br>",df[[yvar]],"<br>",df$nrow)
-    df$data_id=1:nrow(df)
-    df
+    df$data_id=as.character(1:nrow(df))
+    #print(str(df))
+    # write.csv(df,"df.csv",row.names=FALSE)
+
+    # df=read.csv("df.csv",stringsAsFactors = FALSE)
+    # head(df)
+    # gradient_colors=c("white","steelblue");fillvar="value";facetvar=NULL
+    # addlabel=FALSE;polar=FALSE;interactive=FALSE;yangle=0;color="black";size=0.1
 
     xlabels=levels(factor(df[[1]]))
     ylabels=levels(factor(df[[2]]))
@@ -307,9 +313,9 @@ ggHeatmap=function(data,xvar,yvar,fillvar=NULL,facetvar=NULL,stat="count",gradie
     y=1:ytotal
 
 
-    ggplot(df,aes(x=Dx,y=smoking,fill=nrow))+geom_tile()
-    p<-ggplot(df,aes(xmin=xmin,xmax=xmax,ymin=ymin,ymax=ymax,fill=nrow))+
-        geom_rect_interactive(aes(dara_id=data_id,tooltip=tooltip),color=color,size=size,...)+
+    p<-ggplot(df,aes(xmin=xmin,xmax=xmax,ymin=ymin,ymax=ymax,data_id=data_id,tooltip=tooltip))+
+        geom_rect_interactive(aes_string(fill=fillvar),color=color,size=size,...)+
+        #geom_rect_interactive(aes_string(fill=fillvar),color="black",size=0.1);p
         xlab(xvar)+ylab(yvar)
     p<-p+scale_x_continuous(breaks=x,labels=xlabels,limits = c(0.5,xtotal+0.5))
     p<-p+scale_y_continuous(breaks=y,labels=ylabels,limits = c(0.5,ytotal+0.5))
@@ -317,7 +323,7 @@ ggHeatmap=function(data,xvar,yvar,fillvar=NULL,facetvar=NULL,stat="count",gradie
     p<- p+scale_fill_gradientn(colours=gradient_colors)
 
     if(addlabel)
-        p<-p+geom_text(aes(x=xno,y=yno,label=nrow))+guides(fill=FALSE)
+        p<-p+geom_text(aes_string(x="xno",y="yno",label=fillvar))+guides(fill=FALSE)
     if(polar) p<-p+coord_polar()
     if(!is.null(facetvar)) {
         formula=as.formula(paste0("~",facetvar))

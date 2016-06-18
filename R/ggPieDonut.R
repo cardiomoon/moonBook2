@@ -81,7 +81,7 @@ ggPieDonut=function(data=acs,pies="Dx",donuts="smoking",count=NULL,
                 dat1$hjust=ifelse((dat1$cumratio>25 & dat1$cumratio<75),0,1)
                 dat1$label=paste0(dat1[[pies]],'<br>',dat1[[donuts]],"<br>",dat1$n,"(",round(dat1$ratio,1),"%)")
 
-                print(dat1)
+                #print(dat1)
 
                 data2=ddply(data,pies,nrow)
                 colnames(data2)[2]="sum"
@@ -94,7 +94,7 @@ ggPieDonut=function(data=acs,pies="Dx",donuts="smoking",count=NULL,
                                    paste0(data2[[pies]],"<br>",data2$sum,"(",round(data2$ratio,1),"%)"),
                                    paste0(data2[[pies]]))
                 data2$tooltip=paste0(data2[[pies]],"<br>",data2$sum,"(",round(data2$ratio,1),"%)")
-                print(data2)
+                #print(data2)
 
         } else{
                 dat1=data
@@ -108,7 +108,7 @@ ggPieDonut=function(data=acs,pies="Dx",donuts="smoking",count=NULL,
                 dat1$label=paste0(dat1[[pies]],"<br>",dat1[[donuts]],"<br>",dat1$n,"(",round(dat1$ratio,1),"%)")
 
 
-                print(dat1)
+                #print(dat1)
 
                 data2=ddply(dat1,pies,summarize,sum(n))
                 colnames(data2)[2]="sum"
@@ -121,7 +121,7 @@ ggPieDonut=function(data=acs,pies="Dx",donuts="smoking",count=NULL,
                                    paste0(data2[[pies]],"<br>",data2$sum,"(",round(data2$ratio,1),"%)"),
                                    paste0(data2[[pies]]))
                 data2$tooltip=paste0(data2[[pies]],"<br>",data2$sum,"(",round(data2$ratio,1),"%)")
-                print(data2)
+                #print(data2)
 
 
         }
