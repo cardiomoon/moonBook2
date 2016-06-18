@@ -59,7 +59,7 @@ ggPoints.default=function(x,xvar,yvar,colour=NULL,fill=NULL,smooth=TRUE,
     if(jitter) p<-p+geom_jitter(aes(text=paste0("no:",data_id)),...)
     else p<-p+ geom_point(aes(text=paste0("no:",data_id)),...)
 
-    if(smooth) p<- p+geom_smooth(method=method,formula=formula,se=se,level=0.95,fullrange=fullrange)
+    if(smooth) p<- p+geom_smooth(method=method,formula=formula,se=se,level=level,fullrange=fullrange)
     if(interactive) p<-ggplotly(p)
     p
 }
