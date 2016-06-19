@@ -5,8 +5,8 @@
 \title{Draw an interactive choropleth map}
 \usage{
 ggChoropleth(data, map, fillvar = "총인구_명", colors = c("white",
-  "orange", "red"), map_id = "code", tooltip = NULL, subarea = NULL,
-  title = "", interactive = FALSE, ...)
+  "orange", "red"), map_id = "code", tooltip = NULL, facetvar = NULL,
+  subarea = NULL, title = "", interactive = FALSE, ...)
 }
 \arguments{
 \item{data}{a data.frame}
@@ -20,6 +20,8 @@ ggChoropleth(data, map, fillvar = "총인구_명", colors = c("white",
 \item{map_id}{a column name used as an id}
 
 \item{tooltip}{a column name included in a tooltip}
+
+\item{facetvar}{a column name assigned to a facet variable}
 
 \item{subarea}{a name of subarea}
 

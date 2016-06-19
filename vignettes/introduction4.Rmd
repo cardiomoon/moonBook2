@@ -62,10 +62,9 @@ str(crimeslong)
 
 And then you can make static ggplot with ggChoropleth() function first and then add the facets by facet_wrap function nad finally call ggiraph() function to draw a interactive map.
 ```{r,message=FALSE,warning=FALSE,comment=NA,fig.width=5,fig.height=5}
-p<-ggChoropleth(crimeslong,states_map,fill="value",map_id="state",
-             colors=c('white','green','steelblue','red'))
-p<-p+facet_wrap(~variable)
-ggiraph(code=print(p))
+p<-ggChoropleth(crimeslong,states_map,fill="value",map_id="state",facetvar="variable",
+             colors=c('white','green','steelblue','red'),interactive=TRUE)
+p
 ```
 
 ## ggErrorBar()

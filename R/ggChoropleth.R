@@ -124,6 +124,7 @@ area2code <- function(area){
 #' @param colors A vector of colours used as a parameter of scale_fill_gradientn()
 #' @param map_id a column name used as an id
 #' @param tooltip a column name included in a tooltip
+#' @param facetvar a column name assigned to a facet variable
 #' @param subarea a name of subarea
 #' @param title A title
 #' @param interactive Logical. If positive an interactive map will be made
@@ -138,7 +139,7 @@ area2code <- function(area){
 #'#ggChoropleth(data3,kormap3,fillvar="총인구_명",tooltip="name",interactive=TRUE)
 #'#ggChoropleth(data3,kormap3,fillvar="총인구_명",subarea=c("전라","광주"),interactive=TRUE)
 ggChoropleth=function(data,map,fillvar="총인구_명",colors=c('white','orange','red'),
-                      map_id="code",tooltip=NULL,subarea=NULL,title="",interactive=FALSE,...){
+                      map_id="code",tooltip=NULL,facetvar=NULL,subarea=NULL,title="",interactive=FALSE,...){
 
     if(!is.null(subarea)) {
         data=subdata(data,subarea)
@@ -160,8 +161,9 @@ ggChoropleth=function(data,map,fillvar="총인구_명",colors=c('white','orange'
         expand_limits(x=map$long,y=map$lat)+
         geom_map_interactive(map=map,colour='black',size=0.1,...)+
         coord_map()+
-        scale_fill_gradientn(colours=mycolors)+
-        ggtitle(title)
+        scale_fill_gradientn(colours=mycolors)
+    if(!is.null(facetvar)) p<-p+facet_wrap(facetvar)
+    if(title!="") p<-p+ ggtitle(title)
     if(interactive) p<-ggiraph(code=print(p),tooltip_extra_css = tooltip_css)
     p
 }
