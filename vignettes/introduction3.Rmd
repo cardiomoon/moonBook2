@@ -19,7 +19,7 @@ devtools::install_github("cardiomoon/moonBook")
 devtools::install_github("cardiomoon/moonBook2")
 ```
 
-In this vignette, I will show you how to visualize the interaction between two predictor variables. 
+In this vignette, I will show you how to use these functions.
 
 1. PopPyramid(): get population data from internet and make a population pyramid.
 2. ggPoints(): make a scatterplot with/without regression line

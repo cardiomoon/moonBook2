@@ -1,0 +1,91 @@
+---
+title: "Introduction of R package moonBook2(4)"
+author: "Keon-Woong Moon"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Package installation
+
+Package `moonBook` is avaiable on CRAN and github. Package `moonBook2` is available only on github. Please install moonBook2 package using the following R code.
+
+```{r,eval=FALSE}
+install.packages("devtools")
+devtools::install_github("cardiomoon/moonBook")
+devtools::install_github("cardiomoon/moonBook2")
+```
+
+In this vignette, I will show you how to make a choropleth map with moonBook2 package.
+
+1. ggChoropleth() make a choropleth map with moonBook2 package.
+2. ggErrorbar() make a bar plot with errorbars
+
+## ggChoropleth()
+
+A choropleth map is a map with regions that are colored according to variable values. To make a choropleth map, two data is required. One is the map data. The other is data for colors.
+For example, you can get the map data of Unites States by using the following code.
+```{r,message=FALSE,comment=NA}
+require(ggplot2)
+require(moonBook2)
+require(ggiraph)
+states_map <- map_data("state")
+```
+
+You can make a US crime data by following code.
+```{r,message=FALSE,comment=NA}
+crimes <- data.frame(state = tolower(rownames(USArrests)), USArrests)
+crimes
+```
+
+Because the states are coded in lower cases in  states_map, you have to use lower case in you data. You can make a choropleth map showing the `murder` rate easily by the following code.
+
+```{r,message=FALSE,warning=FALSE,comment=NA,fig.width=7,fig.height=5}
+ggChoropleth(crimes,states_map,fill="Murder",map_id="state",interactive=TRUE)
+```
+
+You can make a choropleth map with different colors.
+```{r,message=FALSE,warning=FALSE,comment=NA,fig.width=7,fig.height=7}
+ggChoropleth(crimes,states_map,fill="UrbanPop",map_id="state",
+             colors=c('white','steelblue'),interactive=TRUE)
+```
+
+If you want to make a faceted choroplath map, you have to reshape your data into long form. For example, the crimes data can be reshaped to a long form by the following R code.
+
+```{r,message=FALSE,warning=FALSE,comment=NA,fig.width=7,fig.height=7}
+crimeslong=reshape2::melt(crimes,id="state")
+str(crimeslong)
+```
+
+And then you can make static ggplot with ggChoropleth() function first and then add the facets by facet_wrap function nad finally call ggiraph() function to draw a interactive map.
+```{r,message=FALSE,warning=FALSE,comment=NA,fig.width=5,fig.height=5}
+p<-ggChoropleth(crimeslong,states_map,fill="value",map_id="state",
+             colors=c('white','green','steelblue','red'))
+p<-p+facet_wrap(~variable)
+ggiraph(code=print(p))
+```
+
+## ggErrorBar()
+
+You can make barplot with errobars easliy with ggErrorBar(). With Salaries data, you can summarize the salary of professors with mean and se/sd and draw a bar plot with errorbar.
+
+```{r}
+require(car)  # for use of data Salaries
+ggErrorBar(Salaries,yvar="salary",xvar="rank",group="sex",interactive=TRUE)
+```
+
+By default, the error bar is displayed two-sided. You can display errorbar one-side only by change the mode=1.
+```{r}
+require(moonBook)  # for use of data acs
+ggErrorBar(acs,"age","Dx","sex",interactive=TRUE,mode=1)
+ggErrorBar(acs,"age","Dx",interactive=TRUE,mode=1)
+```
+
+You can use ggErrorBar() function with formula.
+```{r}
+ggErrorBar(age~Dx*sex,data=acs,interactive=TRUE)
+```
+

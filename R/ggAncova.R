@@ -22,25 +22,17 @@ ggCatepillar<- function(x,...) UseMethod("ggCatepillar")
 #'@param x A formula of type y ~ x + A
 #'@param data A data
 ggCatepillar.formula=function(x,data,...){
-    formula<-x
-    m <- match.call(expand.dots = FALSE)
-    m <- m[c(1L, match(c("formula", "data", "subset"), names(m),
-                       0L))]
-    m[[1L]] <- quote(stats::model.frame)
-    mf <- eval.parent(m)
-    # if (NCOL(mf) > 3L)
-    #     stop("'formula' should specify three variables at most")
-    y <- mf[, 1L]
-    if (!is.numeric(y))
-        stop("dependent variable should be a continuous variable")
-    #print(names(mf))
-    y=names(mf)[1]
-    x=names(mf)[2]
-    if(NCOL(mf) == 3L) {
-        group=names(mf)[3]
-        ggCatepillar.default(data,y,x,group,...)
+    f = x
+
+    x = as.character(f[[3]])
+    x = unlist(strsplit(x, "+", fixed = TRUE))
+    y = as.character(f[[2]])
+
+
+    if(length(x) == 3) {
+        ggCatepillar.default(data,yvar=y,xvar=x[2],group=x[3],...)
     } else{
-        ggCatepillar.default(data,y,x,...)
+        ggCatepillar.default(data,yvar=y,xvar=x,...)
     }
 }
 

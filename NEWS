@@ -1,3 +1,11 @@
+moonBook2 0.1.2
+===============
+(2016-Jul-19)
+
+* new function "ggChoropleth", "ggErrorBar" added
+
+* new data asreacode, kormap1,kormap2,kormap3 added
+
 moonBook2 0.1.1
 ==============
 (2016-Jul-11)
