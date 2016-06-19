@@ -1,4 +1,4 @@
-#'Browser market share 2011
+#' Browser market share 2011
 #'
 #'A phony dataset measuring browser market share
 #'

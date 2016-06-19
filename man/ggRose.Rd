@@ -4,8 +4,8 @@
 \alias{ggRose}
 \title{Draw an interactive Rose plot}
 \usage{
-ggRose(data, xvar, fillvar, ..., palette = "Reds", color = "black",
-  size = 0.1)
+ggRose(data, xvar, fillvar, yvar = "None", ..., palette = "Reds",
+  color = "black", size = 0.1)
 }
 \arguments{
 \item{data}{A data.frame}

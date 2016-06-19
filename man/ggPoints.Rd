@@ -66,9 +66,10 @@ Draw scatterplot
 }}
 \examples{
 # require(ggplot2)
-# ggPoints(data=iris,xvar=Sepal.Length,yvar=Sepal.Width,color="Species",interactive=TRUE)
-# ggPoints(data=mtcars,y=mpg,x=wt,fill="factor(cyl)",pch=21,smooth=FALSE)
-# ggPoints(data=acs,x=height,y=weight,colour="sex",interactive=TRUE,
+# require(moonBook)
+# ggPoints(iris,xvar=Sepal.Length,yvar=Sepal.Width,colour="Species",interactive=TRUE)
+# ggPoints(mtcars,yvar=mpg,xvar=wt,fill="factor(cyl)",pch=21,smooth=FALSE)
+# ggPoints(acs,xvar=height,yvar=weight,colour="sex",interactive=TRUE,
 #           position="jitter",method="lm",formula=y~poly(x,2))
 #ggPoints.formula(weight~height|sex,data=radial,interactive=TRUE)
 #ggPoints.formula(weight~height,data=radial)
