@@ -146,7 +146,7 @@ ggChoropleth=function(data,map,fillvar="총인구_명",colors=c('white','orange'
         data=subdata(data,subarea)
         map=subdata(map,subarea)
     }
-    data$data_id=as.character(1:nrow(data))
+    data$data_id=data[[map_id]]
     if(is.null(tooltip)) {
         if(is.numeric(data[[fillvar]])) data[[fillvar]]=round(data[[fillvar]],digits)
         data$tooltip=paste0(data[[map_id]],"<br>",
