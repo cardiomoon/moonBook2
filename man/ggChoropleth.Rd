@@ -6,7 +6,7 @@
 \usage{
 ggChoropleth(data, map, fillvar = "총인구_명", colors = c("white",
   "orange", "red"), map_id = "code", tooltip = NULL, facetvar = NULL,
-  subarea = NULL, title = "", interactive = FALSE, ...)
+  subarea = NULL, title = "", digits = 1, interactive = FALSE, ...)
 }
 \arguments{
 \item{data}{a data.frame}
@@ -26,6 +26,8 @@ ggChoropleth(data, map, fillvar = "총인구_명", colors = c("white",
 \item{subarea}{a name of subarea}
 
 \item{title}{A title}
+
+\item{digits}{An integer indicating the number of decimal places}
 
 \item{interactive}{Logical. If positive an interactive map will be made}
 

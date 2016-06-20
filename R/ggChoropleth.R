@@ -127,6 +127,7 @@ area2code <- function(area){
 #' @param facetvar a column name assigned to a facet variable
 #' @param subarea a name of subarea
 #' @param title A title
+#' @param digits An integer indicating the number of decimal places
 #' @param interactive Logical. If positive an interactive map will be made
 #' @param ... other arguments passed on to geom_map_interactive
 #'@examples
@@ -139,7 +140,7 @@ area2code <- function(area){
 #'#ggChoropleth(data3,kormap3,fillvar="총인구_명",tooltip="name",interactive=TRUE)
 #'#ggChoropleth(data3,kormap3,fillvar="총인구_명",subarea=c("전라","광주"),interactive=TRUE)
 ggChoropleth=function(data,map,fillvar="총인구_명",colors=c('white','orange','red'),
-                      map_id="code",tooltip=NULL,facetvar=NULL,subarea=NULL,title="",interactive=FALSE,...){
+                      map_id="code",tooltip=NULL,facetvar=NULL,subarea=NULL,title="",digits=1,interactive=FALSE,...){
 
     if(!is.null(subarea)) {
         data=subdata(data,subarea)
@@ -147,9 +148,12 @@ ggChoropleth=function(data,map,fillvar="총인구_명",colors=c('white','orange'
     }
     data$data_id=as.character(1:nrow(data))
     if(is.null(tooltip)) {
+        if(is.numeric(data[[fillvar]])) data[[fillvar]]=round(data[[fillvar]],digits)
         data$tooltip=paste0(data[[map_id]],"<br>",
                             fillvar,"<br>",data[[fillvar]])
     } else {
+
+        if(is.numeric(data[[fillvar]])) data[[fillvar]]=round(data[[fillvar]],digits)
         data$tooltip=paste0(data[[tooltip]],"<br>",fillvar,"<br>",data[[fillvar]])
     }
     mycolors=colors
