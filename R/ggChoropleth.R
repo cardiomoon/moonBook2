@@ -168,6 +168,7 @@ ggChoropleth=function(data,map,fillvar="총인구_명",colors=c('white','orange'
         scale_fill_gradientn(colours=mycolors)
     if(!is.null(facetvar)) p<-p+facet_wrap(facetvar)
     if(title!="") p<-p+ ggtitle(title)
+
     if(interactive) p<-ggiraph(code=print(p),tooltip_extra_css = tooltip_css,zoom_max=10)
     p
 }
