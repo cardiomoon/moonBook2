@@ -65,9 +65,9 @@ Draw scatterplot
 \item \code{formula}: Draw scatterplot
 }}
 \examples{
-# require(ggplot2)
-# require(moonBook)
-# ggPoints(iris,xvar=Sepal.Length,yvar=Sepal.Width,colour="Species",interactive=TRUE)
+require(ggplot2)
+require(moonBook)
+ggPoints(iris,xvar=Sepal.Length,yvar=Sepal.Width,colour="Species",interactive=TRUE)
 # ggPoints(mtcars,yvar=mpg,xvar=wt,fill="factor(cyl)",pch=21,smooth=FALSE)
 # ggPoints(acs,xvar=height,yvar=weight,colour="sex",interactive=TRUE,
 #           position="jitter",method="lm",formula=y~poly(x,2))

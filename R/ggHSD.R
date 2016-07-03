@@ -52,7 +52,8 @@ ggHSD=function(tukey,no=1,digits=2,interactive=FALSE){
               axis.text.x=element_text(size=rel(1.5)),
               axis.title.x=element_text(size=rel(1.5)))+
         theme(legend.position="none")
-    if(interactive) p<-ggiraph(code=print(p),hover_css="r:7px;cursor:pointer;stroke-width:6px;")
+    if(interactive) p<-ggiraph(code=print(p),hover_css="r:7px;cursor:pointer;stroke-width:6px;",
+                               zoom_max=10)
     p
 }
 

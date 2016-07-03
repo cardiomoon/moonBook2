@@ -124,8 +124,10 @@ area2code <- function(area){
 #' @param colors A vector of colours used as a parameter of scale_fill_gradientn()
 #' @param map_id a column name used as an id
 #' @param tooltip a column name included in a tooltip
+#' @param facetvar a column name assigned to a facet variable
 #' @param subarea a name of subarea
 #' @param title A title
+#' @param digits An integer indicating the number of decimal places
 #' @param interactive Logical. If positive an interactive map will be made
 #' @param ... other arguments passed on to geom_map_interactive
 #'@examples
@@ -138,17 +140,20 @@ area2code <- function(area){
 #'#ggChoropleth(data3,kormap3,fillvar="총인구_명",tooltip="name",interactive=TRUE)
 #'#ggChoropleth(data3,kormap3,fillvar="총인구_명",subarea=c("전라","광주"),interactive=TRUE)
 ggChoropleth=function(data,map,fillvar="총인구_명",colors=c('white','orange','red'),
-                      map_id="code",tooltip=NULL,subarea=NULL,title="",interactive=FALSE,...){
+                      map_id="code",tooltip=NULL,facetvar=NULL,subarea=NULL,title="",digits=1,interactive=FALSE,...){
 
     if(!is.null(subarea)) {
         data=subdata(data,subarea)
         map=subdata(map,subarea)
     }
-    data$data_id=as.character(1:nrow(data))
+    data$data_id=data[[map_id]]
     if(is.null(tooltip)) {
+        if(is.numeric(data[[fillvar]])) data[[fillvar]]=round(data[[fillvar]],digits)
         data$tooltip=paste0(data[[map_id]],"<br>",
                             fillvar,"<br>",data[[fillvar]])
     } else {
+
+        if(is.numeric(data[[fillvar]])) data[[fillvar]]=round(data[[fillvar]],digits)
         data$tooltip=paste0(data[[tooltip]],"<br>",fillvar,"<br>",data[[fillvar]])
     }
     mycolors=colors
@@ -160,9 +165,10 @@ ggChoropleth=function(data,map,fillvar="총인구_명",colors=c('white','orange'
         expand_limits(x=map$long,y=map$lat)+
         geom_map_interactive(map=map,colour='black',size=0.1,...)+
         coord_map()+
-        scale_fill_gradientn(colours=mycolors)+
-        ggtitle(title)
-    if(interactive) p<-ggiraph(code=print(p),tooltip_extra_css = tooltip_css)
+        scale_fill_gradientn(colours=mycolors)
+    if(!is.null(facetvar)) p<-p+facet_wrap(facetvar)
+    if(title!="") p<-p+ ggtitle(title)
+    if(interactive) p<-ggiraph(code=print(p),tooltip_extra_css = tooltip_css,zoom_max=10)
     p
 }
 

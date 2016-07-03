@@ -103,7 +103,8 @@ ggCatepillar.default=function(x,yvar,xvar,group=NULL,interactive=FALSE,digits=1)
     #p<-my_theme(p)
     #p<-p+theme(legend.position="none")
     if(interactive) p<-ggiraph(code=print(p),
-                               hover_css="r:7px;cursor:pointer;stroke-width:6px;")
+                               hover_css="r:7px;cursor:pointer;stroke-width:6px;",
+                               zoom_max=10)
     p
 }
 
@@ -296,7 +297,8 @@ ggEffect.lm<-function(x,
 
     }
         if(interactive) p<-ggiraph(code=print(p),
-                                   hover_css="r:6px;fill:orange;cursor:pointer;stroke-width:4px;")
+                                   hover_css="r:6px;fill:orange;cursor:pointer;stroke-width:4px;",
+                                   zoom_max=10)
     p
 }
 
@@ -426,7 +428,8 @@ ggAncova.lm=function(x,label=NULL,digits=1,interactive=FALSE){
         #                                colour="colour",linetype="colour"))
         geom_path_interactive(data=df2,aes(colour=color,tooltip=tooltip,data_id=data_id,linetype=color))
     if(interactive) p<-ggiraph(code=print(p),
-                               hover_css="r:4px;cursor:pointer;stroke-width:6px;")
+                               hover_css="r:4px;cursor:pointer;stroke-width:6px;",
+                               zoom_max=10)
     p
 
 }

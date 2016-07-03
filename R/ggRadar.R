@@ -134,7 +134,8 @@ ggRadar=function(data=iris,
         if(radar==TRUE) p<-p+coord_radar()
         if(polar==TRUE) p<-p+coord_polar()
         if(!is.null(ylim)) p<-p+expand_limits(y=ylim)
-        if(interactive) p<-ggiraph(code=print(p),hover_css="fill:orange;r:6px;cursor:pointer")
+        if(interactive) p<-ggiraph(code=print(p),hover_css="fill:orange;r:6px;cursor:pointer",
+                                   zoom_max=10)
         p
 }
 

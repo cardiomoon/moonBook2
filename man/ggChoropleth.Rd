@@ -5,8 +5,8 @@
 \title{Draw an interactive choropleth map}
 \usage{
 ggChoropleth(data, map, fillvar = "총인구_명", colors = c("white",
-  "orange", "red"), map_id = "code", tooltip = NULL, subarea = NULL,
-  title = "", interactive = FALSE, ...)
+  "orange", "red"), map_id = "code", tooltip = NULL, facetvar = NULL,
+  subarea = NULL, title = "", digits = 1, interactive = FALSE, ...)
 }
 \arguments{
 \item{data}{a data.frame}
@@ -21,9 +21,13 @@ ggChoropleth(data, map, fillvar = "총인구_명", colors = c("white",
 
 \item{tooltip}{a column name included in a tooltip}
 
+\item{facetvar}{a column name assigned to a facet variable}
+
 \item{subarea}{a name of subarea}
 
 \item{title}{A title}
+
+\item{digits}{An integer indicating the number of decimal places}
 
 \item{interactive}{Logical. If positive an interactive map will be made}
 

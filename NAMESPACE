@@ -10,6 +10,10 @@ S3method(ggErrorBar,formula)
 S3method(ggErrorBar,default)
 S3method(ggCatepillar,formula)
 S3method(ggCatepillar,default)
+
+export(makeEquation)
+export(ggPair)
+export(ggPairLong)
 export(ggChoropleth)
 export(theme_clean)
 export(num2cut)
@@ -51,7 +55,8 @@ importFrom("ggplot2","ggplot","aes_string","aes","coord_flip","annotate","positi
            "geom_text","coord_munch","geom_segment","ggproto","expand_limits",
            "element_text","facet_grid","geom_hline","rel","geom_point","geom_smooth")
 importFrom("ggiraph","ggiraph","geom_rect_interactive","geom_path_interactive",
-           "geom_point_interactive","geom_polygon_interactive","geom_map_interactive")
+           "geom_point_interactive","geom_polygon_interactive","geom_map_interactive",
+           "geom_boxplot_interactive")
 importFrom("plotly","ggplotly")
 importFrom("stats", "terms")
 importFrom("XML","readHTMLTable")

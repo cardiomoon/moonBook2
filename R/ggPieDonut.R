@@ -1,4 +1,4 @@
-#' Browser market share 2011
+#'Browser market share 2011
 #'
 #'A phony dataset measuring browser market share
 #'
@@ -168,7 +168,7 @@ ggPieDonut=function(data=acs,pies="Dx",donuts="smoking",count=NULL,
         }
         if(polar) p<-p+coord_polar(theta="y",start=3*pi/2)
         if(title!="") p<-p+ggtitle(title)
-        if(interactive) p<-ggiraph(code=print(p))
+        if(interactive) p<-ggiraph(code=print(p),zoom_max=10)
         p
 
 }
@@ -225,7 +225,7 @@ ggDonut=function(data=acs,donuts="Dx",count=NULL,
                 p<- p+ geom_text(aes(label=donutlabel,x=3.5,y=ypos),size=3)
         }
         if(title!="") p<-p+ggtitle(title)
-        if(interactive) p<-ggiraph(code=print(p))
+        if(interactive) p<-ggiraph(code=print(p),zoom_max = 10)
         p
 
 }

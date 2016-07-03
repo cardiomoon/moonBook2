@@ -204,7 +204,7 @@ ggSpine=function(data=acs,fillvar="smoking",xvar="age",yvar=NULL,stat="count",po
         p<-p+ coord_polar()
 
     if(interactive)
-        p<-ggiraph(code={print(p)})
+        p<-ggiraph(code={print(p)},zoom_max = 10)
     p
 
 }

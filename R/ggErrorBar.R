@@ -106,6 +106,6 @@ ggErrorBar.default=function(x,yvar,xvar,group=NULL,interactive=FALSE,digits=1,mo
     #p<-p+geom_errorbar(aes(ymin=age-se,ymax=age+se),position=position_dodge(0.9),width=0.2)+
     if(mode!=2) p<-p+geom_bar_interactive(position="dodge",stat="identity")
 
-    if(interactive) p<-ggiraph(code=print(p))
+    if(interactive) p<-ggiraph(code=print(p),zoom_max = 10)
     p
 }

@@ -147,7 +147,7 @@ ggBidirectionalBar=function(data,left=NULL,right=NULL,label=NULL,
                 guides(fill=guide_legend(title=NULL,reverse=TRUE))+
                 scale_x_continuous(breaks=1:length(data[[label]]),labels=levels(data[[label]]))+
                 scale_y_continuous(labels=human_num2)+ylab("")+ggtitle(title)
-            if(interactive) p<-ggiraph(code=print(p))
+            if(interactive) p<-ggiraph(code=print(p),zoom_max=10)
             p
 
 }

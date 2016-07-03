@@ -200,7 +200,7 @@ ggBar=function(data,xvar,fillvar,yvar=NULL,stat="count",position="stack",palette
     if(yangle!=0) p<-p+theme(axis.text.y=element_text(angle=90,hjust = 0.5))
     if(!is.null(palette)) p<-p+scale_fill_brewer(palette=palette)
     if(interactive)
-        p<-ggiraph(code={print(p)})
+        p<-ggiraph(code={print(p)},zoom_max=10)
     p
 
 
@@ -329,7 +329,7 @@ ggHeatmap=function(data,xvar,yvar,fillvar=NULL,facetvar=NULL,stat="count",gradie
         formula=as.formula(paste0("~",facetvar))
         p<-p+facet_wrap(formula)
     }
-    if(interactive) p<-ggiraph(code=print(p))
+    if(interactive) p<-ggiraph(code=print(p),zoom_max = 10)
     p
 }
 
