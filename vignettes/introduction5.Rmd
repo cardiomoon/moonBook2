@@ -26,8 +26,8 @@ devtools::install_github("davidgohel/ggiraph")
 
 In this vignette, I will show you how to use these functions.
 1. ggPair() make an interactive scatterplot with line graph with wide form data.frame
-2. ggPairLong() make a interactive scatterplot with line graph with long form data.frame
-
+2. ggPairLong() make an interactive scatterplot with line graph with long form data.frame
+3. ggScatter() make an interactive scatterplot with linear regression
 
 ## ggPair()
 
@@ -83,5 +83,26 @@ irislong=melt(iris[3:6],id=c("id","Species"))
 
 ggPairLong(irislong,idvar="id",interactive=TRUE)
 ggPairLong(irislong,idvar="id",colorvar = "Species",interactive=TRUE)
+```
+
+## ggScatter()
+
+ggScatter() draws interactive scatterplot with regression line.
+
+```{r,message=FALSE,warning=FALSE}
+require(moonBook)
+ggScatter(radial,xvar="height",yvar="weight",colorvar="sex",interactive=TRUE)
+```
+
+You can add loess line by setting the parameter addloess TRUE.
+```{r,warning=FALSE}
+ggScatter(radial,xvar="height",yvar="weight",colorvar="sex",addloess=TRUE,interactive=TRUE)
+```
+
+You can use formula with ggScatter().
+
+```{r}
+ggScatter(NTAV~age,data=radial,addloess=TRUE,interactive=TRUE)
+ggScatter(NTAV~age|smoking,data=radial,fullrange=TRUE,se=FALSE,interactive=TRUE)
 ```
 
