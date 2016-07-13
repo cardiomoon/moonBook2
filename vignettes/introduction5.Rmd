@@ -1,0 +1,108 @@
+---
+title: "Introduction of R package moonBook2(5)"
+author: "Keon-Woong Moon"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Package installation
+
+Package `moonBook` is avaiable on CRAN and github. Package `moonBook2` is available only on github. Please install moonBook2 package using the following R code.
+
+```{r,eval=FALSE}
+install.packages("devtools")
+devtools::install_github("cardiomoon/moonBook")
+devtools::install_github("cardiomoon/moonBook2")
+```
+
+Because functions in "moonBook2" make interactive plots using package "ggiraph", I strongly recommend you to install the latest version of the package "ggiraph" from github using following R command. 
+```{r,eval=FALSE}
+devtools::install_github("davidgohel/ggiraph")
+```
+
+In this vignette, I will show you how to use these functions.
+1. ggPair() make an interactive scatterplot with line graph with wide form data.frame
+2. ggPairLong() make an interactive scatterplot with line graph with long form data.frame
+3. ggScatter() make an interactive scatterplot with linear regression
+
+## ggPair()
+
+Basically, ggPair() function draws scatterplot with lineplot. It can be used to visualize paired test or repeated measures ANOVA.    
+
+```{r,message=FALSE,comment=NA}
+require(ggplot2)
+require(ggiraph)
+require(moonBook2)
+
+ggPair(iris,interactive=TRUE)
+```
+
+You can zoom-in and zoom-out the plots with your mouse wheel. You can flip the the x-axis and y-aix by setting the parameter horizontal TRUE. 
+
+```{r}
+ggPair(iris,horizontal=TRUE,interactive=TRUE)
+```
+
+If you select the two variables, the boxplot will be added.
+
+```{r}
+ggPair(iris,vars=c("Sepal.Length","Sepal.Width"),interactive=TRUE)
+```
+
+You can use *colorvar* parameter to be assigened as a color variable.  
+```{r}
+ggPair(iris,vars=c("Sepal.Length","Sepal.Width"),colorvar="Species",interactive=TRUE)
+```
+
+In this plot, you are also able to make horizontal plot. 
+
+```{r}
+ggPair(iris,vars=c("Sepal.Length","Sepal.Width"),colorvar="Species",
+       horizontal=TRUE,interactive=TRUE)
+```
+
+If a data.frame has two continuous variables, the boxplot added automatically.
+
+```{r}
+ggPair(iris[3:5],colorvar="Species",horizontal=TRUE,interactive=TRUE)
+```
+
+## ggPairLong()
+
+If your data.frame is a long form, you can use ggPairLong().
+
+```{r}
+require(reshape2)
+
+iris$id=1:nrow(iris)
+irislong=melt(iris[3:6],id=c("id","Species"))
+
+ggPairLong(irislong,idvar="id",interactive=TRUE)
+ggPairLong(irislong,idvar="id",colorvar = "Species",interactive=TRUE)
+```
+
+## ggScatter()
+
+ggScatter() draws interactive scatterplot with regression line.
+
+```{r,message=FALSE,warning=FALSE}
+require(moonBook)
+ggScatter(radial,xvar="height",yvar="weight",colorvar="sex",interactive=TRUE)
+```
+
+You can add loess line by setting the parameter addloess TRUE.
+```{r,warning=FALSE}
+ggScatter(radial,xvar="height",yvar="weight",colorvar="sex",addloess=TRUE,interactive=TRUE)
+```
+
+You can use formula with ggScatter().
+
+```{r}
+ggScatter(NTAV~age,data=radial,addloess=TRUE,interactive=TRUE)
+ggScatter(NTAV~age|smoking,data=radial,fullrange=TRUE,se=FALSE,interactive=TRUE)
+```
+

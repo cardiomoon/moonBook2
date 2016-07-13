@@ -1,0 +1,29 @@
+Package: moonBook2
+Type: Package
+Title: Functions and Datasets for the 2nd Book by Keon-Woong Moon
+Version: 0.1.4
+Author: Keon-Woong Moon [aut, cre]
+Maintainer: Keon-Woong Moon <cardiomoon@gmail.com>
+Imports:
+    plyr,
+    ggplot2,
+    ggiraph,
+    htmlwidgets,
+    scales,
+    reshape2,
+    moonBook,
+    XML,
+    plotly,
+    grid
+URL: https://github.com/cardiomoon/moonBook2
+Description: Several functions and data for the book entitled "learn ggplot2" by
+    Keon-Woong Moon including interactive plots using ggiraph package.
+License: GPL-3
+LazyData: TRUE
+Encoding: UTF-8
+Suggests:
+    knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: knitr
+RoxygenNote: 5.0.1

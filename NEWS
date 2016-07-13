@@ -1,0 +1,41 @@
+moonBook2 0.1.4
+================
+(2016-Jul-13)
+
+* new function "ggBidirectionalBar2","multiggplot" added
+
+moonBook2 0.1.3
+================
+(2016-Jul-3)
+
+* new function "ggPair","ggPairLong" added
+
+* new function "ggScatter" added
+
+* compatible with ggiraph 0.3.1: Now, you can use mouse wheel to zoom the plots
+
+moonBook2 0.1.2
+===============
+(2016-Jul-19)
+
+* new function "ggChoropleth", "ggErrorBar" added
+
+* new data asreacode, kormap1,kormap2,kormap3 added
+
+moonBook2 0.1.1
+==============
+(2016-Jul-11)
+
+* new functions "ggPoints","ggBar","ggRose","ggHeatmap" added
+
+* new data "taco"" added
+
+
+moonBook2 0.1.0
+==============
+(2016-Jul-5)
+
+* new function "ggAncova", "ggCatepillar", "ggBidirectional Bar", "ggDonut", "ggEffect",
+  "ggHSD", "ggPieDonut", "ggRadar", "ggSpine" and "Poppyramid" added
+
+* new data "rose", "browsers" added

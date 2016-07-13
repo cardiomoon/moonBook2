@@ -1,0 +1,124 @@
+---
+title: "Introduction of package moonBook2(1)"
+author: "Keon-Woong Moon"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This package contains several functions for interactive plots with ggplot2 and ggiraph package.
+
+
+## Package installation
+
+Package `moonBook` is avaiable on CRAN and github. Package `moonBook2` is available only on github. Please install moonBook2 package using the following R code.
+
+```{r,eval=FALSE}
+install.packages("devtools")
+devtools::install_github("cardiomoon/moonBook")
+devtools::install_github("cardiomoon/moonBook2")
+```
+
+## ggSpine() : Interactive mosaic plot and spinogram
+
+This function is a extension of graphics::spineplot() function. This function draws a proportional stacked barplot with variable width. 
+
+```{r,message=FALSE,comment=NA}
+require(moonBook)
+require(ggplot2)
+require(ggiraph)
+require(plyr)
+require(reshape2)
+require(scales)
+require(moonBook2)
+
+ggSpine(data=acs,"Dx","smoking",interactive=TRUE)
+```
+
+Like a bar plot, you can set the parameter position among "stack","dodge" and "fill". You can add labels by setting the parameter addlabel TRUE.
+```{r,message=FALSE,comment=NA}
+ggSpine(data=acs,"Dx","smoking",addlabel=TRUE,position="stack",interactive=TRUE)
+ggSpine(data=acs,"Dx","smoking",addlabel=TRUE,position="dodge",interactive=TRUE)
+```
+
+When used with a continuous variable, it draws a spinogram which is an extension of histogram. In this case, the barwidth is set with a value 1.0(you can adjust the value).  
+
+```{r,message=FALSE,comment=NA}
+ggSpine(data=acs,Dx,age,addlabel=TRUE,interactive=TRUE)
+```
+
+You can draw a plot with pre-processed data. In this example, we use the rose data in moonBook2 package. You can assign a continuous variable(rose[["value"]]") to y-axis variable and set the parameter stat "identity".
+```{r,message=FALSE,comment=NA}
+head(rose,10)
+ggSpine(rose,"group","Month",yvar="value",stat="identity",width=1,interactive=TRUE)
+```
+
+You can make a "Rose" plot with variable width.
+```{r,message=FALSE,comment=NA}
+ggSpine(rose,"group","Month",yvar="value",stat="identity",position="stack",width=1,
+        polar=TRUE,interactive=TRUE,palette="Reds")
+```
+
+## ggRadar() : Interactive Radar chart
+
+Radar chart is a graphical method of displaying three or more continuous data in a 2-dimensional chart. With moonBook::acs data, we can complare all continuous variables in patients with acute coronary syndrome.
+
+```{r,message=FALSE,comment=NA}
+ggRadar(acs,groupvar="sex",interactive=TRUE)
+```
+
+Because the distributions of variables are differ, you should rescle the data by set the parameter rescale TRUE.
+```{r,message=FALSE,comment=NA}
+ggRadar(acs,groupvar="sex",interactive=TRUE,rescale=TRUE)
+```
+As you can see, male patients are taller and heavier than female patients. But the bod mass index(BMI) is almost the same.
+
+With mtcars data, you can make a exploratoty plot with this command. 
+
+```{r,message=FALSE,comment=NA}
+ggRadar(mtcars,groupvar="am",rescale=TRUE,interactive=TRUE)
+ggRadar(mtcars,groupvar="cyl",rescale=TRUE,interactive=TRUE)
+```
+
+You can make faceted chart with this code.
+
+```{r}
+mtcars$model=rownames(mtcars)
+p<-ggRadar(mtcars[1:9,],rescale=TRUE,groupvar="model",legend.position="none")+
+         ylim(0,1)+facet_wrap(~model)
+ggiraph(code=print(p))
+```
+
+
+## ggPieDonut() : Combine Pie and Donut plot
+
+You can combine Pie and donut plot easily with ggPieDonut() function. Let's see the browsers data.
+
+```{r,message=FALSE,comment=NA}
+str(browsers)
+```
+
+With this data, you can make the PieDonut plot easily.
+```{r,message=FALSE,comment=NA,warning=FALSE}
+ggPieDonut(browsers,pies="browser",donuts="version",count="share",interactive=TRUE)
+```
+
+When with categrical variables, ggPieDonut() function calculate the count.
+```{r,message=FALSE,comment=NA,warning=FALSE}
+ggPieDonut(acs,"Dx","smoking",interactive=TRUE)
+```
+```{r,message=FALSE,comment=NA,warning=FALSE}
+ggPieDonut(mtcars,"cyl","carb",labelposition=0,interactive=TRUE)
+```
+
+
+## ggDount() : Make a Donut plot
+
+```{r,message=FALSE,comment=NA,warning=FALSE}
+ggDonut(browsers,donuts="version",count="share",interactive=TRUE)
+ggDonut(browsers,version,count="share",labelposition=0,interactive=TRUE)
+ggDonut(acs,Dx,interactive=TRUE)
+```
