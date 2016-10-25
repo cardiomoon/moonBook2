@@ -30,11 +30,16 @@ ggScatter<-function(x,...) UseMethod("ggScatter")
 #'ggScatter(iris,xvar="Sepal.Length",yvar="Sepal.Width",addloess=FALSE,colorvar="Species",interactive=TRUE)
 #'ggScatter(radial,xvar="height",yvar="weight",interactive=TRUE)
 ggScatter.default=function(x,xvar,yvar,colorvar=NULL,se=TRUE,addloess=FALSE,
-                   loessse=FALSE,fullrange=FALSE,interactive=FALSE){
-    data<-x
-    df=data[c(xvar,yvar,colorvar)]
+                   loessse=FALSE,fullrange=FALSE,tooltip=NULL,interactive=FALSE){
+    df<-x
+    #df=data[c(xvar,yvar,colorvar,tooltip)]
+
     df$id=1:nrow(df)
-    df$tooltip=paste0(xvar,":",df[[xvar]],"<br>",yvar,":",df[[yvar]])
+    if(is.null(tooltip)){
+        df$tooltip=paste0(df$id,"<br>",xvar,":",df[[xvar]],"<br>",yvar,":",df[[yvar]])
+    } else{
+        df$tooltip=paste0(df[[tooltip]],"<br>",xvar,":",df[[xvar]],"<br>",yvar,":",df[[yvar]])
+    }
     if(!is.null(colorvar)) df$tooltip=paste0(df$tooltip,"<br>",colorvar,":",df[[colorvar]])
     if(is.null(colorvar)){
         myformula=as.formula(paste0(yvar,"~",xvar))

@@ -5,8 +5,9 @@
 \title{Draw an interactive choropleth map}
 \usage{
 ggChoropleth(data, map, fillvar = "총인구_명", colors = c("white",
-  "orange", "red"), map_id = "code", tooltip = NULL, facetvar = NULL,
-  subarea = NULL, title = "", digits = 1, interactive = FALSE, ...)
+  "orange", "red"), palette = NULL, map_id = "code", tooltip = NULL,
+  facetvar = NULL, subarea = NULL, title = "", digits = 1,
+  interactive = FALSE, ...)
 }
 \arguments{
 \item{data}{a data.frame}
@@ -16,6 +17,8 @@ ggChoropleth(data, map, fillvar = "총인구_명", colors = c("white",
 \item{fillvar}{a column name assigned to a fill variable}
 
 \item{colors}{A vector of colours used as a parameter of scale_fill_gradientn()}
+
+\item{palette}{A palette name used for discrete fill var}
 
 \item{map_id}{a column name used as an id}
 

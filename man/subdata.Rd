@@ -2,7 +2,17 @@
 % Please edit documentation in R/ggChoropleth.R
 \name{subdata}
 \alias{subdata}
-\title{Select subdata of data}
+\title{#'Korean administative area and code
+#'
+#'A dataset
+#'
+#'  @format A data.frame with 16 rows and 3 columns
+#'  \describe{
+#'     \item{code}{Korean administative area code}
+#'     \item{name}{Korean administative area, level 1}
+#'     \item{name2}{abbreviation of area}
+#'}
+"areacode"}
 \usage{
 subdata(data, area)
 }
@@ -15,6 +25,66 @@ subdata(data, area)
 Subdata of data.frame orclass Shape of which code matched with area
 }
 \description{
+#'Korean administative map data(2010) level 1
+#'
+#'A dataset
+#'
+#'  @format A data.frame with 6928 rows and 11 columns
+#'  \describe{
+#'     \item{id}{Korean administative area code}
+#'     \item{long}{longitude}
+#'     \item{lat}{latitude}
+#'     \item{order}{An integer}
+#'     \item{hole}{A logical}
+#'     \item{piece}{Factor with 102 levels}
+#'     \item{group}{Factor with 186 levels}
+#'     \item{SP_ID}{shape id}
+#'     \item{FID}{An integer}
+#'     \item{code}{Area code}
+#'     \item{region}{Region}
+#'}
+"kormap1"
+}
+\details{
+#'Korean administative map data(2010) level 2
+#'
+#'A dataset
+#'
+#'  @format A data.frame with 16926 rows and 11 columns
+#'  \describe{
+#'     \item{id}{Korean administative area code}
+#'     \item{long}{longitude}
+#'     \item{lat}{latitude}
+#'     \item{order}{An integer}
+#'     \item{hole}{A logical}
+#'     \item{piece}{Factor with 37 levels}
+#'     \item{group}{Factor with 401 levels}
+#'     \item{SP_ID}{shape id}
+#'     \item{FID}{An integer}
+#'     \item{code}{Area code}
+#'     \item{region}{Region}
+#'}
+"kormap2"
+
+#'Korean administative map data(2010) level 3
+#'
+#'A dataset
+#'
+#'  @format A data.frame with 70711 rows and 11 columns
+#'  \describe{
+#'     \item{id}{Korean administative area code}
+#'     \item{long}{longitude}
+#'     \item{lat}{latitude}
+#'     \item{order}{An integer}
+#'     \item{hole}{A logical}
+#'     \item{piece}{Factor with 11 levels}
+#'     \item{group}{Factor with 3593 levels}
+#'     \item{SP_ID}{shape id}
+#'     \item{FID}{An integer}
+#'     \item{code}{Area code}
+#'     \item{region}{Region}
+#'}
+"kormap3"
 Select subdata of data
 }
 

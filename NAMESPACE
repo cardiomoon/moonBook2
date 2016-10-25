@@ -47,6 +47,7 @@ export(PopPyramid)
 export(ggHSD)
 export(num2cut)
 
+
 importFrom("grDevices", "col2rgb", "rainbow", "rgb")
 importFrom("plyr","ddply","summarize","round_any")
 importFrom("reshape2","melt")
