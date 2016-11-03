@@ -66,13 +66,20 @@ ggScatter.default=function(x,xvar,yvar,colorvar=NULL,se=TRUE,addloess=FALSE,
         p
 
     } else {
+        z=colorvar
         group=unique(df[[colorvar]])
+        if(is.numeric(df[[colorvar]])&(length(group)<6)){
+            df[[colorvar]]<-factor(df[[colorvar]])
+            group=unique(df[[colorvar]])
+        }
         name<-intercept<-slope<-xmin<-xmax<-ymin<-ymax<-tooltip<-c()
         for(i in 1 :length(group)){
-            subdf=data[data[[colorvar]]==group[i],]
+            subdf=df[df[[colorvar]]==group[i],]
             myformula=as.formula(paste0(yvar,"~",xvar))
             fit=lm(myformula,data=subdf)
-            if(is.factor(df[[colorvar]])) name<-c(name,levels(df[[colorvar]])[i])
+            # if(is.factor(df[[colorvar]])) name<-c(name,levels(df[[colorvar]])[i])
+            # else name<-c(name,group[i])
+            if(is.factor(df[[colorvar]])) name<-c(name,levels(group)[group[i]])
             else name<-c(name,group[i])
             intercept=c(intercept,coef(fit)[1])
             slope=c(slope,coef(fit)[2])
@@ -89,24 +96,30 @@ ggScatter.default=function(x,xvar,yvar,colorvar=NULL,se=TRUE,addloess=FALSE,
                 ymax=c(ymax,max(subdf[[xvar]],na.rm=T)*coef(fit)[2]+coef(fit)[1])
 
             }
-            tooltip=c(tooltip,makeEquation(fit)[1])
+            tooltip=c(tooltip,paste0("for ",colorvar,"=",group[i],"<br>",makeEquation(fit)[1]))
         }
         df2=data.frame(name,intercept,slope,xmin,xmax,ymin,ymax,tooltip)
         x=c(df2$xmin,df2$xmax)
         y=c(df2$ymin,df2$ymax)
-        color=rainbow(length(group))
-        df2
-        df3=data.frame(x,y,color,df2$name,tooltip)
-        colnames(df3)[4]=colorvar
+        #color=rainbow(length(group))
+        #str(df2)
+        df3=data.frame(x,y,df2$name,tooltip)
+        colnames(df3)[3]=z
         df3$id=1:nrow(df3)
-        #str(df3)
-        p<-ggplot(data=df,aes_string(x=xvar,y=yvar,color=colorvar))
-        if(se) p<-p+ geom_smooth(method="lm",fullrange=fullrange)
-        if(addloess) p<-p+ geom_smooth(se=loessse)
 
-        p<-p+ geom_path_interactive(data=df3,aes_string(x="x",y="y",
-                                                      color=colorvar,data_id="id",tooltip="tooltip"),size=1)+
-            geom_point_interactive(aes(data_id=id,tooltip=tooltip))
+
+        p<-ggplot(data=df,aes_string(x=xvar,y=yvar,colour=colorvar))
+        p<-p+ geom_smooth(method="lm",se=se,fullrange=fullrange)
+        if(addloess) p<-p+ geom_smooth(se=loessse)
+        p<-p+ geom_path_interactive(data=df3,
+                                    aes_string(x="x",y="y",data_id="id",tooltip="tooltip",colour=colorvar),
+                                    size=1)
+        p<-p+geom_point_interactive(aes(data_id=id,tooltip=tooltip))
+
+        # formula=as.formula(paste0(yvar,"~",xvar,"*",colorvar))
+        # p<-ggEffect(formula,data=x)
+        # if(se) p<-p+ geom_smooth(method="lm",fullrange=TRUE)
+        # if(addloess) p<-p+ geom_smooth(se=loessse)
 
 
     }

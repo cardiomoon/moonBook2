@@ -143,6 +143,8 @@ area2code <- function(area){
 ggChoropleth=function(data,map,fillvar="총인구_명",colors=c('white','orange','red'),palette=NULL,
                       map_id="code",tooltip=NULL,facetvar=NULL,subarea=NULL,title="",digits=1,interactive=FALSE,...){
 
+
+
     if(!is.null(subarea)) {
         data=subdata(data,subarea)
         map=subdata(map,subarea)
@@ -166,7 +168,8 @@ ggChoropleth=function(data,map,fillvar="총인구_명",colors=c('white','orange'
                                    data_id="data_id",tooltip="tooltip"))+
         expand_limits(x=map$long,y=map$lat)+coord_map()
     p<-p+geom_map_interactive(map=map,colour='black',size=0.1,...)
-
+    #require(ggiraph)
+    #p<-p+geom_map_interactive(map=map,colour='black',size=0.1)
     if(is.numeric(data[[fillvar]])) {
         p<-p+scale_fill_gradientn(colours=mycolors)
     } else {

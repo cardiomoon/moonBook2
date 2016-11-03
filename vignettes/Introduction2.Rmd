@@ -147,6 +147,8 @@ ggEffect(mpg~hp*wt,data=mtcars,xvalue=c(2.2,3.2,4.2),interactive=TRUE)
 You can use the ggEffect() function with categorical variables. You can see the impact of intweraction between aging and smoking status on the progression of atherosclerosis, try this:
 ```{r}
 ggEffect(NTAV~age*smoking,data=radial,interactive=TRUE)
+ggEffect(NTAV~age*DM,data=radial,interactive=TRUE)
+
 ```
 
 You can clearly see that the atheroscerosis progresses rapidly among smokers. 

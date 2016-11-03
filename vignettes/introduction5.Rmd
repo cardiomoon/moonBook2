@@ -103,6 +103,7 @@ You can use formula with ggScatter().
 
 ```{r}
 ggScatter(NTAV~age,data=radial,addloess=TRUE,interactive=TRUE)
-ggScatter(NTAV~age|smoking,data=radial,fullrange=TRUE,se=FALSE,interactive=TRUE)
+ggScatter(NTAV~age|smoking,data=radial,fullrange=TRUE,se=FALSE,addloess=FALSE,interactive=TRUE)
+ggScatter(NTAV~age|DM,data=radial,fullrange=TRUE,se=TRUE,addloess=FALSE,interactive=TRUE)
 ```
 

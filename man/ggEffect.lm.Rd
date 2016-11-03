@@ -5,7 +5,7 @@
 \title{Visualize the effect of interaction between two continuous independent variables on a response variable}
 \usage{
 \method{ggEffect}{lm}(x, no = 1, probs = c(0.1, 0.5, 0.9), point = TRUE,
-  xvalue = NULL, digits = 1, use.rownames = FALSE, interactive = FALSE)
+  xvalue = NULL, digits = 2, use.rownames = FALSE, interactive = FALSE)
 }
 \arguments{
 \item{x}{An integer(1 or 2) indicating which independent variable is used as x-axis variable}
@@ -31,13 +31,14 @@ Visualize the effect of interaction between two continuous independent variables
 \examples{
 data(mtcars)
 fit=lm(mpg~wt*hp,data=mtcars)
-#ggEffect(fit,use.rownames=TRUE)
-#ggEffect(fit,use.rownames=TRUE,interactive=TRUE)
-#ggEffect(fit,no=2)
-#require(moonBook)
-#fit2=lm(NTAV~age*smoking,data=radial)
-#ggEffect(fit2,interactive=TRUE)
-#fit3=lm(age~sex*smoking,data=acs)
-#ggEffect(fit3,interactive=TRUE)
+require(ggplot2)
+ggEffect(fit,use.rownames=TRUE)
+ggEffect(fit,use.rownames=TRUE,interactive=TRUE)
+ggEffect(fit,no=2)
+require(moonBook)
+fit2=lm(NTAV~age*smoking,data=radial)
+ggEffect(fit2,interactive=TRUE)
+fit3=lm(age~sex*smoking,data=acs)
+ggEffect(fit3,interactive=TRUE)
 }
 
