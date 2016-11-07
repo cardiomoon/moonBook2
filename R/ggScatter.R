@@ -30,7 +30,9 @@ ggScatter<-function(x,...) UseMethod("ggScatter")
 #'ggScatter(iris,xvar="Sepal.Length",yvar="Sepal.Width",addloess=FALSE,colorvar="Species",interactive=TRUE)
 #'ggScatter(radial,xvar="height",yvar="weight",interactive=TRUE)
 ggScatter.default=function(x,xvar,yvar,colorvar=NULL,se=TRUE,addloess=FALSE,
-                   loessse=FALSE,fullrange=FALSE,tooltip=NULL,interactive=FALSE){
+                   loessse=FALSE,fullrange=FALSE,tooltip=NULL,interactive=FALSE,...){
+     # x=mtcars;xvar="wt";yvar="mpg";colorvar=NULL;se=TRUE;addloess=FALSE
+     # loessse=TRUE;fullrange=FALSE;tooltip=NULL;interactive=FALSE
     df<-x
     #df=data[c(xvar,yvar,colorvar,tooltip)]
 
@@ -58,11 +60,11 @@ ggScatter.default=function(x,xvar,yvar,colorvar=NULL,se=TRUE,addloess=FALSE,
         df
         df3
         p<-ggplot(data=df,aes_string(x=xvar,y=yvar))
-        if(se) p<-p+ geom_smooth(method="lm",fullrange=fullrange)
+        p<-p+ geom_smooth(method="lm",se=se,fullrange=fullrange)
+        p
         if(addloess) p<-p+ geom_smooth(colour="red",se=loessse)
-        p<-p+ geom_path_interactive(data=df3,aes_string(x="x",y="y",
-                                                      data_id="id",tooltip="tooltip"),color="blue",size=1)+
-            geom_point_interactive(aes(data_id=id,tooltip=tooltip))
+        p<-p+ geom_path_interactive(data=df3,aes_string(x="x",y="y",data_id="id",tooltip="tooltip"),color="blue",size=1)+
+                    geom_point_interactive(aes_string(data_id="id",tooltip="tooltip"),...)
         p
 
     } else {
@@ -112,9 +114,9 @@ ggScatter.default=function(x,xvar,yvar,colorvar=NULL,se=TRUE,addloess=FALSE,
         p<-p+ geom_smooth(method="lm",se=se,fullrange=fullrange)
         if(addloess) p<-p+ geom_smooth(se=loessse)
         p<-p+ geom_path_interactive(data=df3,
-                                    aes_string(x="x",y="y",data_id="id",tooltip="tooltip",colour=colorvar),
+                                    aes_string(x="x",y="y",colour=colorvar,data_id="id",tooltip="tooltip"),
                                     size=1)
-        p<-p+geom_point_interactive(aes(data_id=id,tooltip=tooltip))
+        p<-p+geom_point_interactive(aes_string(data_id="id",tooltip="tooltip"),...)
 
         # formula=as.formula(paste0(yvar,"~",xvar,"*",colorvar))
         # p<-ggEffect(formula,data=x)
@@ -125,9 +127,11 @@ ggScatter.default=function(x,xvar,yvar,colorvar=NULL,se=TRUE,addloess=FALSE,
     }
     if(interactive){
         tooltip_css <- "background-color:white;font-style:italic;padding:10px;border-radius:10px 20px 10px 20px;"
-        hover_css="fill-opacity=.3;cursor:pointer;stroke:gold;"
-        if(interactive) p<-ggiraph(code=print(p),tooltip_extra_css=tooltip_css,tooltip_opacity=.75,
-                                   zoom_max=10,hover_css=hover_css)
+        #hover_css="fill-opacity=.3;cursor:pointer;stroke:gold;"
+        hover_css="r:4px;cursor:pointer;stroke-width:6px;"
+        selected_css = "fill:#FF3333;stroke:black;"
+        p<-ggiraph(code=print(p),tooltip_extra_css=tooltip_css,tooltip_opacity=.75,
+                                   zoom_max=10,hover_css=hover_css,selected_css=selected_css)
     }
     p
 

@@ -121,6 +121,7 @@ ggBar=function(data,xvar,fillvar,yvar=NULL,stat="count",position="stack",palette
     } else{
         for(i in 1:count){
             dfsub=df[df$xno==i,]
+            dfsub<-dfsub[nrow(dfsub):1,]
             dfsub$ratio=round(dfsub$nrow*100/csum[i],digits)
             dfsub$ymax=cumsum(dfsub$nrow)
             dfsub$ymin=dfsub$ymax-dfsub$nrow
@@ -159,15 +160,13 @@ ggBar=function(data,xvar,fillvar,yvar=NULL,stat="count",position="stack",palette
     } else y=df2[df2$xno==1,"y"]
 
 
-    df2
-    xvar
-    fillvar
+
     p<-ggplot(mapping=aes_string(x=xvar,fill=fillvar,y="nrow"),data=df2)+
         # geom_bar(stat="identity")
         # geom_bar_interactive(stat="identity")
         geom_bar_interactive(aes(tooltip=tooltip,data_id=data_id),stat="identity",
                              position=position,width=barwidth,...)
-    p
+
 
 
     # if(contmode) p<-p+scale_x_continuous(breaks=xmax,labels=xlabels,limits = c(0,total))

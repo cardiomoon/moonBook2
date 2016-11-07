@@ -62,9 +62,11 @@ ggPair=function(data,vars=NULL,colorvar=NULL,idcolor=TRUE,horizontal=FALSE,inter
     }
     if(varcount==2) {
         longdf1=longdf[longdf$variable==vars[1],]
+        #longdf1$toolitip=paste0(longdf1$id,"<br>",vars[1])
         p<-p+geom_boxplot_interactive(data=longdf1,
                                       aes(x=as.numeric(variable)-0.2,group=NULL,data_id=id,tooltip=vars[1]),width=0.2)
         longdf2=longdf[longdf$variable==vars[2],]
+        #longdf2$toolitip=paste0(longdf2$id,"<br>",vars[2])
         p<-p+geom_boxplot_interactive(data=longdf2,
                                       aes(x=as.numeric(variable)+0.2,group=NULL,data_id=id,tooltip=vars[2]),width=0.2)
     }

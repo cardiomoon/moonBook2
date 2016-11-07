@@ -10,7 +10,7 @@ ggScatter(x, ...)
 
 \method{ggScatter}{default}(x, xvar, yvar, colorvar = NULL, se = TRUE,
   addloess = FALSE, loessse = FALSE, fullrange = FALSE, tooltip = NULL,
-  interactive = FALSE)
+  interactive = FALSE, ...)
 
 \method{ggScatter}{formula}(x, data, ...)
 }

@@ -55,11 +55,11 @@ ggCatepillar.default=function(x,yvar,xvar,group=NULL,interactive=FALSE,digits=1)
     C=xvar
     if(is.null(B)){
         dat=summarySE(df,A,C)
-        dat$tooltip=""
+        dat$tooltip="all"
         dat$label=paste0(dat[[C]],"<br>",round(dat[[A]],digits))
     } else if(B=="None") {
         dat=summarySE(df,A,C)
-        dat$tooltip=""
+        dat$tooltip="all"
         dat$label=paste0(dat[[C]],"<br>",round(dat[[A]],digits))
     } else {
         dat=summarySE(df,A,c(B,C))
@@ -94,8 +94,8 @@ ggCatepillar.default=function(x,yvar,xvar,group=NULL,interactive=FALSE,digits=1)
 
     } else p<-ggplot(data=dat,aes_string(x=C,y=A,group=B,colour=B))
 
-    p<-p+ geom_path_interactive(aes(tooltip=tooltip,data_id=id),position=position_dodge(width=mywidth))+
-        geom_point_interactive(aes(tooltip=label,data_id=id),size=4,position=position_dodge(width=mywidth))
+    p<-p+ geom_path_interactive(aes_string(tooltip="tooltip",data_id="id"),position=position_dodge(width=mywidth))+
+        geom_point_interactive(aes_string(tooltip="label",data_id="id"),size=4,position=position_dodge(width=mywidth))
     p
     p<-p+eval(parse(text=paste0("geom_errorbar(aes(ymin=",A,"-se,ymax=",
                                 A,"+se),width=",mywidth,",
@@ -247,11 +247,11 @@ ggEffect.lm<-function(x,
         df2$data_id=1:nrow(df2)
         # str(df)
         # str(df2)
-        p<-ggplot(data=df,aes_string(x=name[1+count],y=name[1],colour=color))+
+        p<-ggplot(data=df,aes_string(x=name[1+count],y=name[1],colour=color,tooltip="tooltip",data_id="data_id"))+
             #stat_smooth(method="lm",se=se,fullrange=TRUE)+
             geom_path_interactive(data=df2,
-                                  aes_string(x="x",y="y",tooltip="tooltip",data_id="data_id"),size=1)
-        if(point) p<-p+ geom_point_interactive(aes(tooltip=label,data_id=data_id))
+                                  aes_string(x="x",y="y"),size=1)
+        if(point) p<-p+ geom_point_interactive(aes(tooltip=label))
 
         # p1<-ggplot(data=df,aes_string(x=name[1+count],y=name[1],colour=color))+
         #     stat_smooth(method="lm",se=se,fullrange=TRUE)+
@@ -311,14 +311,15 @@ ggEffect.lm<-function(x,
         }
 
         p<-p+ geom_path_interactive(data=df2,
-                                  aes_string(x="x",y="y",tooltip="tooltip",data_id="data_id",color=z),size=1)
+                                  aes_string(x="x",y="y",tooltip="tooltip",color=z),size=1)
 
         if(point) p<-p + geom_point_interactive()
 
     }
     if(interactive){
         tooltip_css <- "background-color:white;font-style:italic;padding:10px;border-radius:10px 20px 10px 20px;"
-        hover_css="fill-opacity=.3;cursor:pointer;stroke:gold;"
+        #hover_css="fill-opacity=.3;cursor:pointer;stroke:gold;"
+        hover_css="r:4px;cursor:pointer;stroke-width:6px;"
         if(interactive) p<-ggiraph(code=print(p),tooltip_extra_css=tooltip_css,tooltip_opacity=.75,
                                    zoom_max=10,hover_css=hover_css)
     }
