@@ -94,16 +94,13 @@ require(moonBook)
 ggScatter(radial,xvar="height",yvar="weight",colorvar="sex",interactive=TRUE)
 ```
 
-You can add loess line by setting the parameter addloess TRUE.
-```{r,warning=FALSE}
-ggScatter(radial,xvar="height",yvar="weight",colorvar="sex",addloess=TRUE,interactive=TRUE)
-```
+
 
 You can use formula with ggScatter().
 
 ```{r}
-ggScatter(NTAV~age,data=radial,addloess=TRUE,interactive=TRUE)
-ggScatter(NTAV~age|smoking,data=radial,fullrange=TRUE,se=FALSE,addloess=FALSE,interactive=TRUE)
-ggScatter(NTAV~age|DM,data=radial,fullrange=TRUE,se=TRUE,addloess=FALSE,interactive=TRUE)
+ggScatter(NTAV~age,data=radial,interactive=TRUE)
+ggScatter(NTAV~age|smoking,data=radial,fullrange=TRUE,se=FALSE,interactive=TRUE)
+ggScatter(NTAV~age|DM,data=radial,fullrange=TRUE,se=TRUE,interactive=TRUE)
 ```
 

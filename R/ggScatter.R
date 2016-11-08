@@ -25,12 +25,14 @@ ggScatter<-function(x,...) UseMethod("ggScatter")
 #'require(moonBook)
 #'require(ggplot2)
 #'require(ggiraph)
-#'ggScatter(iris,xvar="Sepal.Length",yvar="Sepal.Width",se=FALSE,colorvar="Species",interactive=TRUE)
-#'ggScatter(acs,xvar="height",yvar="weight",colorvar="Dx",se=FALSE,interactive=TRUE)
-#'ggScatter(iris,xvar="Sepal.Length",yvar="Sepal.Width",addloess=FALSE,colorvar="Species",interactive=TRUE)
-#'ggScatter(radial,xvar="height",yvar="weight",interactive=TRUE)
-ggScatter.default=function(x,xvar,yvar,colorvar=NULL,se=TRUE,addloess=FALSE,
-                   loessse=FALSE,fullrange=FALSE,tooltip=NULL,interactive=FALSE,...){
+#'ggScatter(iris,yvar="Sepal.Width",xvar="Sepal.Length",se=FALSE,colorvar="Species",interactive=TRUE)
+#'ggScatter(acs,yvar="weight",xvar="height",colorvar="Dx",se=FALSE,interactive=TRUE)
+#'ggScatter(iris,yvar="Sepal.Width",xvar="Sepal.Length",colorvar="Species",interactive=TRUE)
+#'ggScatter(radial,yvar="NTAV",xvar="age",colorvar="DM",interactive=TRUE)
+ggScatter.default=function(x,yvar,xvar,colorvar=NULL,facet=FALSE,
+                           se=TRUE,method="auto",fullrange=FALSE,
+                           #addloess=FALSE,loessse=FALSE,
+                           cut_number=3,tooltip=NULL,interactive=FALSE,...){
      # x=mtcars;xvar="wt";yvar="mpg";colorvar=NULL;se=TRUE;addloess=FALSE
      # loessse=TRUE;fullrange=FALSE;tooltip=NULL;interactive=FALSE
     df<-x
@@ -44,79 +46,136 @@ ggScatter.default=function(x,xvar,yvar,colorvar=NULL,se=TRUE,addloess=FALSE,
     }
     if(!is.null(colorvar)) df$tooltip=paste0(df$tooltip,"<br>",colorvar,":",df[[colorvar]])
     if(is.null(colorvar)){
-        myformula=as.formula(paste0(yvar,"~",xvar))
-        fit=lm(myformula,data=df)
-        intercept=coef(fit)[1]
-        slope=coef(fit)[2]
-        xmin=min(df[[xvar]],na.rm=T)
-        xmax=max(df[[xvar]],na.rm=T)
-        ymin=xmin*slope+intercept
-        ymax=xmax*slope+intercept
-        x=c(xmin,xmax)
-        y=c(ymin,ymax)
-        tooltip=makeEquation(fit)[1]
-        df3=data.frame(x,y,tooltip)
-        df3$id=1:nrow(df3)
-        df
-        df3
+
         p<-ggplot(data=df,aes_string(x=xvar,y=yvar))
-        p<-p+ geom_smooth(method="lm",se=se,fullrange=fullrange)
-        p
-        if(addloess) p<-p+ geom_smooth(colour="red",se=loessse)
-        p<-p+ geom_path_interactive(data=df3,aes_string(x="x",y="y",data_id="id",tooltip="tooltip"),color="blue",size=1)+
-                    geom_point_interactive(aes_string(data_id="id",tooltip="tooltip"),...)
+        p<-p+ geom_smooth(method=method,se=se,fullrange=fullrange)
+
+        #if(addloess) p<-p+ geom_smooth(colour="red",se=loessse)
+        if(method=="lm") {
+            myformula=as.formula(paste0(yvar,"~",xvar))
+            fit=lm(myformula,data=df)
+            intercept=coef(fit)[1]
+            slope=coef(fit)[2]
+            xmin=min(df[[xvar]],na.rm=T)
+            xmax=max(df[[xvar]],na.rm=T)
+            ymin=xmin*slope+intercept
+            ymax=xmax*slope+intercept
+            x=c(xmin,xmax)
+            y=c(ymin,ymax)
+            tooltip=makeEquation(fit)[1]
+            df3=data.frame(x,y,tooltip)
+            df3$id=1:nrow(df3)
+            #df
+            #str(df3)
+            p<-p+ geom_path_interactive(data=df3,aes_string(x="x",y="y",data_id="id",tooltip="tooltip"),color="blue",size=1)
+        }
+        #caption=df3$tooltip[1]
+        #print(caption)
+        #if(method=="lm") p<-p+labs(caption=caption)
+        p<-p+ geom_point_interactive(aes(data_id="id",tooltip=tooltip),...)
         p
 
     } else {
         z=colorvar
         group=unique(df[[colorvar]])
-        if(is.numeric(df[[colorvar]])&(length(group)<6)){
+        categorical=TRUE
+        if(is.numeric(df[[colorvar]])&(length(group)<=6)){
             df[[colorvar]]<-factor(df[[colorvar]])
             group=unique(df[[colorvar]])
+        } else if(is.numeric(df[[colorvar]])&(length(group)>6)){
+            categorical=FALSE
+            df$cut_group=cut_number(df[[colorvar]],n=cut_number)
+            group=levels(df$cut_group)
         }
-        name<-intercept<-slope<-xmin<-xmax<-ymin<-ymax<-tooltip<-c()
-        for(i in 1 :length(group)){
-            subdf=df[df[[colorvar]]==group[i],]
-            myformula=as.formula(paste0(yvar,"~",xvar))
-            fit=lm(myformula,data=subdf)
-            # if(is.factor(df[[colorvar]])) name<-c(name,levels(df[[colorvar]])[i])
-            # else name<-c(name,group[i])
-            if(is.factor(df[[colorvar]])) name<-c(name,levels(group)[group[i]])
-            else name<-c(name,group[i])
-            intercept=c(intercept,coef(fit)[1])
-            slope=c(slope,coef(fit)[2])
-            if(fullrange){
-                xmin=c(xmin,min(df[[xvar]],na.rm=T))
-                xmax=c(xmax,max(df[[xvar]],na.rm=T))
-                ymin=c(ymin,min(df[[xvar]],na.rm=T)*coef(fit)[2]+coef(fit)[1])
-                ymax=c(ymax,max(df[[xvar]],na.rm=T)*coef(fit)[2]+coef(fit)[1])
-
-            } else{
-                xmin=c(xmin,min(subdf[[xvar]],na.rm=T))
-                xmax=c(xmax,max(subdf[[xvar]],na.rm=T))
-                ymin=c(ymin,min(subdf[[xvar]],na.rm=T)*coef(fit)[2]+coef(fit)[1])
-                ymax=c(ymax,max(subdf[[xvar]],na.rm=T)*coef(fit)[2]+coef(fit)[1])
-
-            }
-            tooltip=c(tooltip,paste0("for ",colorvar,"=",group[i],"<br>",makeEquation(fit)[1]))
-        }
-        df2=data.frame(name,intercept,slope,xmin,xmax,ymin,ymax,tooltip)
-        x=c(df2$xmin,df2$xmax)
-        y=c(df2$ymin,df2$ymax)
-        #color=rainbow(length(group))
-        #str(df2)
-        df3=data.frame(x,y,df2$name,tooltip)
-        colnames(df3)[3]=z
-        df3$id=1:nrow(df3)
-
-
         p<-ggplot(data=df,aes_string(x=xvar,y=yvar,colour=colorvar))
-        p<-p+ geom_smooth(method="lm",se=se,fullrange=fullrange)
-        if(addloess) p<-p+ geom_smooth(se=loessse)
-        p<-p+ geom_path_interactive(data=df3,
-                                    aes_string(x="x",y="y",colour=colorvar,data_id="id",tooltip="tooltip"),
+        p<-p+ geom_smooth(method=method,se=se,fullrange=fullrange)
+
+
+
+        # print(categorical)
+        #     str(df3)
+        #     str(df)
+
+        #if(addloess) p<-p+ geom_smooth(se=loessse)
+        if(method=="lm"){
+            name<-intercept<-slope<-xmin<-xmax<-ymin<-ymax<-tooltip<-c()
+
+
+            for(i in 1 :length(group)){
+                if(categorical) subdf=df[df[[colorvar]]==group[i],]
+                else subdf=df[df$cut_group==group[i],]
+                myformula=as.formula(paste0(yvar,"~",xvar))
+                fit=lm(myformula,data=subdf)
+                # if(is.factor(df[[colorvar]])) name<-c(name,levels(df[[colorvar]])[i])
+                # else name<-c(name,group[i])
+                if(is.factor(df[[colorvar]])) name<-c(name,levels(group)[group[i]])
+                else name<-c(name,group[i])
+                intercept=c(intercept,coef(fit)[1])
+                slope=c(slope,coef(fit)[2])
+                if(fullrange){
+                    xmin=c(xmin,min(df[[xvar]],na.rm=T))
+                    xmax=c(xmax,max(df[[xvar]],na.rm=T))
+                    ymin=c(ymin,min(df[[xvar]],na.rm=T)*coef(fit)[2]+coef(fit)[1])
+                    ymax=c(ymax,max(df[[xvar]],na.rm=T)*coef(fit)[2]+coef(fit)[1])
+
+                } else{
+                    xmin=c(xmin,min(subdf[[xvar]],na.rm=T))
+                    xmax=c(xmax,max(subdf[[xvar]],na.rm=T))
+                    ymin=c(ymin,min(subdf[[xvar]],na.rm=T)*coef(fit)[2]+coef(fit)[1])
+                    ymax=c(ymax,max(subdf[[xvar]],na.rm=T)*coef(fit)[2]+coef(fit)[1])
+
+                }
+                tooltip=c(tooltip,paste0("for ",colorvar,"=",group[i],"<br>",makeEquation(fit)[1]))
+            }
+            df2=data.frame(name,intercept,slope,xmin,xmax,ymin,ymax,tooltip)
+            x=c(df2$xmin,df2$xmax)
+            y=c(df2$ymin,df2$ymax)
+            #color=rainbow(length(group))
+            #str(df2)
+            df3=data.frame(x,y,df2$name,tooltip)
+            if(categorical) colnames(df3)[3]=z
+            else colnames(df3)[3]="cut_group"
+            df3$id=1:nrow(df3)
+            if((!categorical) & (!facet)){
+                myformula=as.formula(paste0(yvar,"~",xvar))
+                fit=lm(myformula,data=df)
+                intercept=coef(fit)[1]
+                slope=coef(fit)[2]
+                xmin=min(df[[xvar]],na.rm=T)
+                xmax=max(df[[xvar]],na.rm=T)
+                ymin=xmin*slope+intercept
+                ymax=xmax*slope+intercept
+                x=c(xmin,xmax)
+                y=c(ymin,ymax)
+                tooltip=makeEquation(fit)[1]
+                df3=data.frame(x,y,tooltip)
+                df3$id=1:nrow(df3)
+                df
+                #str(df3)
+            }
+
+            if(categorical){
+                p<-p+ geom_path_interactive(data=df3,
+                                            aes_string(x="x",y="y",colour=colorvar,data_id="id",tooltip="tooltip"),
+                                            size=1)
+            } else {
+
+            p<-p+ geom_path_interactive(data=df3,
+                                    aes_string(x="x",y="y",data_id="id",tooltip="tooltip"),color="blue",
                                     size=1)
+            }
+        }
         p<-p+geom_point_interactive(aes_string(data_id="id",tooltip="tooltip"),...)
+
+        if(facet){
+        if(!categorical) p<-p+facet_wrap(~cut_group)
+        else p<-p+eval(parse(text=paste0("facet_wrap(~",colorvar,")")))
+        }
+
+        # caption=df3$tooltip[seq(1,nrow(df3),2)]
+        # print(caption)
+        # if(method=="lm") p<-p+labs(caption=caption)
+
 
         # formula=as.formula(paste0(yvar,"~",xvar,"*",colorvar))
         # p<-ggEffect(formula,data=x)

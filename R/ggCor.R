@@ -1,3 +1,4 @@
+require(mycor)
 #' Draw a heatmap of correlation test
 #'
 #' @param df A data.frame
@@ -11,7 +12,9 @@
 #'# ggCor(mtcars,interactive=TRUE)
 #'# ggCor(iris,method="pearson")
 ggCor=function(df,label=FALSE,colors=NULL,title=FALSE,interactive=FALSE,...){
-    result=mycor(df,...)
+    # df=iris;
+    # result=mycor(iris)
+    result=mycor::mycor(df,...)
 
     if(is.null(colors)) colors=c("#6D9EC1","white","#E46726")
     cor_mat<-result$r

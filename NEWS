@@ -1,7 +1,8 @@
 moonBook2 0.1.6
 ================
+(2016-Nov-8)
 
-* new function "ggCor" added
+* new function "ggCor", "ggBoxplot" added
 
 * function "ggPoints"" deleted. Please use "ggScatter" function.
 
