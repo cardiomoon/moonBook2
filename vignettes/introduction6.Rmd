@@ -11,7 +11,7 @@ vignette: >
 
 ## Package installation
 
-Package `moonBook` is avaiable on CRAN and github. Package `moonBook2` is available only on github. Please install moonBook2 package using the following R code.
+Package `moonBook` is available on CRAN and github. Package `moonBook2` is available only on github. Please install moonBook2 package using the following R code.
 
 ```{r,eval=FALSE}
 install.packages("devtools")

@@ -4,11 +4,11 @@
 \alias{ggBoxplot}
 \title{Draw boxplots of a data.frame}
 \usage{
-ggBoxplot(x, rescale = FALSE, horizontal = FALSE, interactive = FALSE,
+ggBoxplot(data, rescale = FALSE, horizontal = FALSE, interactive = FALSE,
   ...)
 }
 \arguments{
-\item{x}{a data.frame}
+\item{data}{a data.frame}
 
 \item{rescale}{if true, rescale the data.frame}
 

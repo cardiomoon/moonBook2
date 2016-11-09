@@ -10,7 +10,7 @@ ggScatter<-function(x,...) UseMethod("ggScatter")
 #'@describeIn ggScatter
 #' Draw scatterplot
 #'
-#' @param data a data.frame
+#'@param data a data.frame
 #'@param x A data.frame
 #'@param xvar A character string of column name be used as a x-axis variable
 #'@param yvar A character string of column name be used as a y-axis variable.

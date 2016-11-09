@@ -45,7 +45,8 @@ export(ggHSD)
 export(num2cut)
 export(ggCor)
 export(ggBoxplot)
-
+export(ggLogReg)
+export(ggCLE)
 
 importFrom("grDevices", "col2rgb", "rainbow", "rgb")
 importFrom("plyr","ddply","summarize","round_any")

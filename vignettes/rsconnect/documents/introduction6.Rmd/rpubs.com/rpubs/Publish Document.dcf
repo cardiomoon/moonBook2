@@ -1,0 +1,8 @@
+name: Publish Document
+title:
+account: rpubs
+server: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/225353/7bde4bd84f3b493e895d7df46db3e04d
+bundleId: https://api.rpubs.com/api/v1/document/225353/7bde4bd84f3b493e895d7df46db3e04d
+url: http://rpubs.com/cardiomoon/225353
+when: 1478589340.7005
