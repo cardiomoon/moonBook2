@@ -47,6 +47,7 @@ export(ggCor)
 export(ggBoxplot)
 export(ggLogReg)
 export(ggCLE)
+export(ggDot)
 
 importFrom("grDevices", "col2rgb", "rainbow", "rgb")
 importFrom("plyr","ddply","summarize","round_any")
@@ -63,7 +64,6 @@ importFrom("ggplot2","ggplot","aes_string","aes","coord_flip","annotate","positi
 importFrom("ggiraph","ggiraph","geom_rect_interactive","geom_path_interactive",
            "geom_point_interactive","geom_polygon_interactive","geom_map_interactive",
            "geom_boxplot_interactive")
-importFrom("plotly","ggplotly")
 importFrom("stats", "terms")
 importFrom("XML","readHTMLTable")
 importFrom("grid","viewport")

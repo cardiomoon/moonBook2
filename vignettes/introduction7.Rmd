@@ -14,6 +14,7 @@ In this vignette, I will show you how to use these functions.
 
 1. ggLogReg() make a scatterplot for logistic regression model
 2. ggCLE() make a cleveland dot plot
+3. ggDot() make a Wilkinson dot plot
 ```
 
 ## Package installation
@@ -54,6 +55,7 @@ The other example comes from data 'radial' included in package moonBook.
 require(moonBook)
 ggLogReg(radial,yvar="male",xvar="height",interactive=TRUE)
 ```
+
 ## ggCLE()
 
 ggCLE() draws a Cleveland dot plot. You can make a cleveland dot plot easily with the famous data `mtcars`. By default, the y axis variables are reordered by x-axis variables.
@@ -94,4 +96,36 @@ ggCLE(tophitters2001,xvar="rbi",yvar="name",colorvar="lg",facetvar="lg",no=25,in
 You can get a static ggplot by set the parameter interactive FALSE(default value).
 ```{r,fig.width=7,fig.height=5}
 ggCLE(tophitters2001,xvar="so",yvar="name",colorvar="lg",facetvar="lg",no=25,decreasing=FALSE)
+```
+
+## ggDot()
+
+ggDot() make a Wilkinson dot plot. Like a histogram, you can make a Wilkinson dotplot by selecting x axis variable only.
+
+```{r,fig.height=3,fig.width=4}
+require(moonBook)   # for data radial
+require(gcookbook)  # for data heightweight
+
+ggDot(heightweight,xvar="heightIn")
+```
+
+You can assign a variable to `fillvar` to fill the dots.
+```{r,fig.height=3,fig.width=4}
+ggDot(heightweight,xvar="heightIn",fillvar="sex")
+```
+
+You can make dot plots with boxplots side-by-side by assign a categorial variable as to `xvar` and a continuous variable to `yvar`.
+```{r,fig.height=3,fig.width=4}
+ggDot(heightweight,yvar="heightIn",xvar="sex",fillvar="sex")
+```
+
+You can change the size of dot by setting the parameter binwidth. You can change the direction of stack by setting the stackdir parameter. You can adjust the positions of boxplot and dotplot with parameter position.
+```{r,fig.height=3,fig.width=4,warning=FALSE}
+ggDot(radial,yvar="height",xvar="sex",fillvar="sex",stackdir="down",binwidth=1,position=0.1)
+```
+
+If you wanted to draw a overapped dotplot overaaped with boxplot, set the position 0. 
+```{r,fig.height=3,fig.width=4,warning=FALSE}
+ggDot(radial,yvar="height",xvar="sex",fillvar="sex",boxfill="white",position=0,binwidth=1,boxwidth=0.5)
+
 ```
