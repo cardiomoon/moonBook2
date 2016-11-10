@@ -50,7 +50,7 @@ export(ggCLE)
 export(ggDot)
 
 importFrom("grDevices", "col2rgb", "rainbow", "rgb")
-importFrom("plyr","ddply","summarize","round_any")
+importFrom("plyr","ddply","summarize","round_any","splat")
 importFrom("reshape2","melt")
 importFrom("scales","comma")
 importFrom("mycor","mycor")

@@ -87,20 +87,36 @@ ggPairLong(irislong,idvar="id",colorvar = "Species",interactive=TRUE)
 
 ## ggScatter()
 
-ggScatter() draws interactive scatterplot with regression line.
+ggScatter() draws interactive scatterplot with regression line. The basic method of regression is `loess`.
 
 ```{r,message=FALSE,warning=FALSE}
 require(moonBook)
-ggScatter(radial,xvar="height",yvar="weight",colorvar="sex",interactive=TRUE)
+require(plyr)
+ggScatter(radial,xvar="age",yvar="NTAV",interactive=TRUE)
+```
+
+If you select the regression method "lm", the regression equation will be appeared as a tooltip on the regression line. 
+```{r,message=FALSE,warning=FALSE}
+ggScatter(radial,xvar="age",yvar="NTAV",method="lm",interactive=TRUE)
+```
+
+You can use colorvar or fillvar to differentiate groups.
+```{r,message=FALSE,warning=FALSE}
+ggScatter(radial,xvar="age",yvar="NTAV",colorvar="sex",interactive=TRUE)
+ggScatter(radial,xvar="age",yvar="NTAV",fillvar="sex",interactive=TRUE,shape=21)
+ggScatter(radial,xvar="age",yvar="NTAV",fillvar="sex",facetvar="DM",interactive=TRUE,shape=21)
+ggScatter(radial,xvar="age",yvar="NTAV",colorvar="sex",fillvar="sex",facetvar="DM",method="lm",shape=21,interactive=TRUE)
+ggScatter(radial,xvar="height",yvar="weight",colorvar="sex",facetvar="sex",interactive=TRUE)
 ```
 
 
 
 You can use formula with ggScatter().
 
-```{r}
+```{r,warning=FALSE}
 ggScatter(NTAV~age,data=radial,interactive=TRUE)
-ggScatter(NTAV~age|smoking,data=radial,fullrange=TRUE,se=FALSE,interactive=TRUE)
-ggScatter(NTAV~age|DM,data=radial,fullrange=TRUE,se=TRUE,interactive=TRUE)
+ggScatter(NTAV~age|smoking,data=radial,fullrange=TRUE,method="lm",se=FALSE,interactive=TRUE)
+ggScatter(NTAV~age|DM,data=radial,fullrange=TRUE,method="lm",se=TRUE,interactive=TRUE)
+ggScatter(NTAV~age|DM,facetvar="DM",data=radial,fullrange=TRUE,se=TRUE,interactive=TRUE)
 ```
 
