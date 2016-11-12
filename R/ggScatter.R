@@ -1,7 +1,6 @@
 require(ggplot2)
 require(ggiraph)
 
-
 #' Make numeric column of a data.frame to factor
 #'
 #' @param data a data.frame
@@ -47,6 +46,7 @@ ggScatter<-function(x,...) UseMethod("ggScatter")
 #'require(moonBook)
 #'require(ggplot2)
 #'require(ggiraph)
+
 #'ggScatter(iris,yvar="Sepal.Width",xvar="Sepal.Length",method="lm",interactive=TRUE)
 #'ggScatter(iris,yvar="Sepal.Width",xvar="Sepal.Length",se=FALSE,colorvar="Species",interactive=TRUE)
 #'ggScatter(acs,yvar="weight",xvar="height",colorvar="Dx",facetvar="Dx",se=FALSE,method="lm",interactive=TRUE)
@@ -54,10 +54,9 @@ ggScatter<-function(x,...) UseMethod("ggScatter")
 #'ggScatter(radial,yvar="NTAV",xvar="age",colorvar="DM",facetrvar="DM",interactive=TRUE)
 ggScatter.default=function(x,yvar,xvar,colorvar=NULL,fillvar=NULL,facetvar=NULL,
                            se=TRUE,method="auto",fullrange=FALSE,maxfactorno=6,digits=2,
-                           #addloess=FALSE,loessse=FALSE,
                            tooltip=NULL,interactive=FALSE,...){
-       # x=radial;xvar="age";yvar="NTAV";colorvar="DM";fillvar=NULL;facetvar=NULL;se=TRUE;
-       # fullrange=FALSE;tooltip=NULL;interactive=FALSE;method="lm"
+    #   x=radial;xvar="height";yvar="male";colorvar="male";fillvar=NULL;facetvar=NULL;se=TRUE;
+     #  fullrange=FALSE;tooltip=NULL;interactive=FALSE;method="glm";maxfactorno=6;digits=2
     # df<-x
     # #df=data[c(xvar,yvar,colorvar,tooltip)]
     #
@@ -251,6 +250,25 @@ ggScatter.default=function(x,yvar,xvar,colorvar=NULL,fillvar=NULL,facetvar=NULL,
         #}
 
         if(method=="lm"){
+
+        temp=paste0("function(",y,",",x,",...){fit=lm(",y,"~",x,");c(fit$coef,x=min(",x,",na.rm=T),xend=max(",x,",na.rm=T))}")
+        coeflm=eval(parse(text=temp))
+
+        makeEq=function(slope,intercept,...){
+            paste0("y = ",round(intercept,2),ifelse(slope>=0,"+","-"),abs(round(slope,2)),"x")
+        }
+
+        if(!is.null(colorvar)){
+            if(is.numeric(data[[colorvar]])&(length(unique(data[[colorvar]]))<=maxfactorno)){
+                data[[colorvar]]<-factor(data[[colorvar]])
+            }
+        }
+        if(!is.null(fillvar)){
+            if(is.numeric(data[[fillvar]])&(length(unique(data[[fillvar]]))<=maxfactorno)){
+                data[[fillvar]]<-factor(data[[fillvar]])
+            }
+        }
+
         (result=ddply(data,c(colorvar,fillvar,facetvar),splat(coeflm)))
         colnames(result)[colnames(result)=="(Intercept)"]="intercept"
         colnames(result)[colnames(result)==x]="slope"
@@ -262,8 +280,12 @@ ggScatter.default=function(x,yvar,xvar,colorvar=NULL,fillvar=NULL,facetvar=NULL,
         }
         result$y=result$x*result$slope+result$intercept
         result$yend=result$xend*result$slope+result$intercept
+
         print(result)
         }
+
+        #result
+
         data$id=1:nrow(data)
         if(is.null(tooltip)){
             data$tooltip=paste0(data$id,"<br>",x,":",data[[x]],"<br>",y,":",data[[y]])
@@ -283,6 +305,7 @@ ggScatter.default=function(x,yvar,xvar,colorvar=NULL,fillvar=NULL,facetvar=NULL,
             p<-p+ stat_smooth(method=method,se=se,fullrange=fullrange)
             p<-p+geom_point_interactive(aes(data_id=id,tooltip=tooltip),...)
         }
+
         if(!is.null(facetvar)) p<-p+facet_grid(as.formula(paste0(".~",facetvar)))
         if(method=="lm")
             p<-p+geom_segment_interactive(data=result,aes_string(color=colorvar,fill=fillvar,x="x",xend="xend",y="y",yend="yend",color=colorvar,data_id="id",tooltip="tooltip"))

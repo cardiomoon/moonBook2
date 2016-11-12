@@ -4,7 +4,8 @@
 \alias{ggLogReg}
 \title{Draw a jittered scatter plot for logistic regression model}
 \usage{
-ggLogReg(data, yvar, xvar, se = TRUE, interactive = FALSE, ...)
+ggLogReg(data, yvar, xvar, se = TRUE, interactive = FALSE, digits = 2,
+  ...)
 }
 \arguments{
 \item{data}{a data.frame}

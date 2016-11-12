@@ -8,6 +8,8 @@ require(ggiraph)
 #'@param se Logical. display confidence interval around linear regression? (TRUE by default)
 #'@param interactive A logical value. If TRUE, an interactive plot will be returned
 #'@param ... other arguments passed on to geom_point
+
+
 ggLogReg=function(data,yvar,xvar,se=TRUE,interactive=FALSE,digits=2,...){
     data$id=1:nrow(data)
     data$tooltip=paste0(data$id,"<br>",xvar,"=",data[[xvar]],"<br>",yvar,"=",data[[yvar]])
@@ -27,6 +29,7 @@ ggLogReg=function(data,yvar,xvar,se=TRUE,interactive=FALSE,digits=2,...){
         geom_point_interactive(aes(tooltip=tooltip,data_id=id),
                                position=position_jitter(width=0.3,height=0.06),alpha=0.5,...)+
         geom_path_interactive(data=df1,aes(x=x,y=y,tooltip=tooltip,data_id=id),colour="blue",size=1)
+
     if(interactive){
         tooltip_css <- "background-color:white;font-style:italic;padding:10px;border-radius:10px 20px 10px 20px;"
         #hover_css="fill-opacity=.3;cursor:pointer;stroke:gold;"
@@ -38,7 +41,4 @@ ggLogReg=function(data,yvar,xvar,se=TRUE,interactive=FALSE,digits=2,...){
     p
 
 }
-
-
-
 

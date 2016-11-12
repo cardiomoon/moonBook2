@@ -38,13 +38,10 @@ ggBar=function(data,xvar,fillvar,yvar=NULL,stat="count",position="stack",palette
                width=NULL,digits=1,horizontal=FALSE,yangle=0,
                addlabel=FALSE,polar=FALSE,interactive=FALSE,...){
 
-    # data=result1;xvar="no";fillvar="sex";yvar="N";stat="identity";position="stack";palette=NULL;
-    # width=NULL;digits=1;horizontal=FALSE;yangle=0;
-    # addlabel=FALSE;polar=FALSE;interactive=FALSE;
-    # result1$no=factor(result1$no)
 
+    fillvar=as.character(substitute(fillvar))
+    xvar=as.character(substitute(xvar))
     contmode=0
-    str(result1)
     # print(fillvar)
     # print(xvar)
     # print(yvar)
@@ -85,13 +82,11 @@ ggBar=function(data,xvar,fillvar,yvar=NULL,stat="count",position="stack",palette
 
     df
     a
-    str(a)
-
     if(is.null(width)) width=0.9
     df$xno=as.numeric(factor(df[[1]]))
     df$yno=as.numeric(factor(df[[2]]))
 
-    (total=sum(a,na.rm=TRUE))
+    total=sum(a,na.rm=TRUE)
     (csum=colSums(a,na.rm=TRUE))
     (csum/total)<0.05
     (rsum=rowSums(a,na.rm=TRUE))
@@ -143,16 +138,16 @@ ggBar=function(data,xvar,fillvar,yvar=NULL,stat="count",position="stack",palette
 
     df2$data_id=as.character(1:nrow(df2))
     df2$tooltip=paste0(df2[[xvar]],"<br>",df2[[fillvar]],"<br>",df2$nrow)
-    df2$label=df2$nrow
+    if(contmode) df2$label=ifelse((df2$csum/total)>0.04,df2$nrow,"")
+    else df2$label=df2$nrow
     if(position=="fill") {
         df2$tooltip=paste0(df2$tooltip,"(",df2$ratio,"%)")
-        df2$label=paste0(df2$ratio,"%")
-        #df2$label=ifelse((df2$csum/total)>0.04,paste0(df2$ratio,"%"),"")
+        if(contmode) df2$label=ifelse((df2$csum/total)>0.04,paste0(df2$ratio,"%"),"")
+        else df2$label=paste0(df2$ratio,"%")
     }
 
-    print(df2)
-    print(df2$ratio)
-    print(df2$label)
+    #print(df2)
+
     if(contmode) {
         xlabels=breaks[2:length(breaks)]
         xlabels
@@ -175,42 +170,24 @@ ggBar=function(data,xvar,fillvar,yvar=NULL,stat="count",position="stack",palette
                              position=position,width=barwidth,...)
 
 
-
-
-    # if(contmode) p<-p+scale_x_continuous(breaks=xmax,labels=xlabels,limits = c(0,total))
-    # else p<-p+scale_x_continuous(breaks=x,labels=xlabels,limits = c(0,total))
-    #
-     # if(position!="dodge") {
-     #     p<-p+ scale_y_continuous(breaks=y,labels=ylabels)+
-     #         #scale_fill_discrete(guide=FALSE)+
-     #         scale_fill_brewer(palette=palette,guide=FALSE)+
-     #         ylab("")
-     # } else p<-p+ylab("count")+scale_fill_brewer(palette=palette)
-
     if(addlabel) {
         if(position=="stack") {
             p=p+geom_text(aes(x=df2$xno,y=df2$y,label=df2$label))
         } else if(position=="fill") {
-             p=p+geom_text(aes(x=df2$xno,y=(df2$y)/100,label=df2$label))
+            p=p+geom_text(aes(x=df2$xno,y=(df2$y)/100,label=df2$label))
         } else {
             if(horizontal){
-                p=p+geom_text(aes(label=df2$label),position=position_dodge(0.9),hjust=-0.2)
-                if(position=="dodge")
-                    p<-p+scale_y_continuous(limits=c(0,max(df2$nrow)*1.1))
+                p=p+geom_text(aes(label=df2$label),position=position_dodge(0.9),hjust=-0.5)
             } else{
-                p=p+geom_text(aes(label=df2$label),position=position_dodge(0.9),vjust=-0.5)
+            p=p+geom_text(aes(label=df2$label),position=position_dodge(0.9),vjust=-0.5)
             }
         }
 
     }
 
-
-    # p<-p+theme_bw()+
-    #     theme(axis.text.y=element_text(angle=90),axis.ticks.y=element_blank())
-    #
     if(polar==TRUE) p<-p+ coord_polar()
     if(horizontal==TRUE) p<-p+ coord_flip()
-    if(yangle!=0) p<-p+theme(axis.text.y=element_text(angle=90,hjust = 0.5))
+    if(yangle!=0) p<-p+theme(axis.text.y=element_text(angle=yangle,hjust = 0.5))
     if(!is.null(palette)) p<-p+scale_fill_brewer(palette=palette)
     if(interactive)
         p<-ggiraph(code={print(p)},zoom_max=10)
@@ -243,8 +220,8 @@ ggRose=function(data,xvar,fillvar,yvar="None",...,palette="Reds",color="black",s
     xvar=as.character(substitute(xvar))
 
     if(yvar=="None") {
-    temp=paste0("ggBar(data=",data,",xvar=",xvar,",fillvar=",fillvar,",stat='identity',width=1,color='",color,
-                "',size=",size,",palette='",palette,"',polar=TRUE,...)")
+        temp=paste0("ggBar(data=",data,",xvar=",xvar,",fillvar=",fillvar,",stat='identity',width=1,color='",color,
+                    "',size=",size,",palette='",palette,"',polar=TRUE,...)")
     } else{
         temp=paste0("ggBar(data=",data,",xvar=",xvar,",yvar='",yvar,"',fillvar=",fillvar,
                     ",stat='identity',width=1,color='",color,
@@ -345,5 +322,4 @@ ggHeatmap=function(data,xvar,yvar,fillvar=NULL,facetvar=NULL,stat="count",gradie
     if(interactive) p<-ggiraph(code=print(p),zoom_max = 10)
     p
 }
-
 

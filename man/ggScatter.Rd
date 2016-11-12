@@ -8,16 +8,16 @@
 \usage{
 ggScatter(x, ...)
 
-\method{ggScatter}{default}(x, yvar, xvar, colorvar = NULL, facet = FALSE,
-  se = TRUE, method = "auto", fullrange = FALSE, cut_number = 3,
-  tooltip = NULL, interactive = FALSE, ...)
+\method{ggScatter}{default}(x, yvar, xvar, colorvar = NULL, fillvar = NULL,
+  facetvar = NULL, se = TRUE, method = "auto", fullrange = FALSE,
+  maxfactorno = 6, digits = 2, tooltip = NULL, interactive = FALSE, ...)
 
 \method{ggScatter}{formula}(x, data, ...)
 }
 \arguments{
 \item{x}{An R object to ggPoints}
 
-\item{...}{other arguments passed on to ggScatter.defalut}
+\item{...}{other arguments passed on to geom_point}
 
 \item{yvar}{A character string of column name be used as a y-axis variable.}
 
@@ -25,9 +25,17 @@ ggScatter(x, ...)
 
 \item{colorvar}{A character string of column name be used as a colour variable. Default value is NULL}
 
+\item{fillvar}{A character string of column name be used as a fill variable. Default value is NULL}
+
+\item{facetvar}{A character string of column name be used as a facet variable. Default value is NULL}
+
 \item{se}{Logical. display confidence interval around linear regression? (TRUE by default)}
 
+\item{method}{smoothing method (function) to use, eg. "lm", "glm", "gam", "loess", "rlm"}
+
 \item{fullrange}{should the fit span the full range of the plot, or just the data}
+
+\item{tooltip}{A character string of column name be included in tooltip. Default value is NULL}
 
 \item{interactive}{A logical value. If TRUE, an interactive plot will be returned}
 
@@ -35,13 +43,11 @@ ggScatter(x, ...)
 
 \item{x}{A data.frame}
 
-\item{addloess}{Logical. add loess line}
-
-\item{loessse}{Logical. display confidence interval around loess regression? (TRUE by default)}
-
 \item{x}{A formula of type y ~ x | B}
 
 \item{data}{A data.frame}
+
+\item{...}{other arguments passed on to ggScatter.defalut}
 }
 \description{
 Make an interactive scatterplot
@@ -56,10 +62,11 @@ Make an interactive scatterplot
 require(moonBook)
 require(ggplot2)
 require(ggiraph)
+ggScatter(iris,yvar="Sepal.Width",xvar="Sepal.Length",method="lm",interactive=TRUE)
 ggScatter(iris,yvar="Sepal.Width",xvar="Sepal.Length",se=FALSE,colorvar="Species",interactive=TRUE)
-ggScatter(acs,yvar="weight",xvar="height",colorvar="Dx",se=FALSE,interactive=TRUE)
+ggScatter(acs,yvar="weight",xvar="height",colorvar="Dx",facetvar="Dx",se=FALSE,method="lm",interactive=TRUE)
 ggScatter(iris,yvar="Sepal.Width",xvar="Sepal.Length",colorvar="Species",interactive=TRUE)
-ggScatter(radial,yvar="NTAV",xvar="age",colorvar="DM",interactive=TRUE)
+ggScatter(radial,yvar="NTAV",xvar="age",colorvar="DM",facetrvar="DM",interactive=TRUE)
 require(moonBook)
 ggScatter(weight~height|sex,data=radial,interactive=TRUE)
 ggScatter(weight~height|sex,data=radial,fullrange=TRUE,se=FALSE,interactive=TRUE)

@@ -50,6 +50,7 @@ export(ggCLE)
 export(ggDot)
 export(num2factorDf)
 
+
 importFrom("grDevices", "col2rgb", "rainbow", "rgb")
 importFrom("plyr","ddply","summarize","round_any","splat")
 importFrom("reshape2","melt")
