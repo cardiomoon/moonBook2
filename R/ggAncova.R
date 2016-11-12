@@ -55,11 +55,11 @@ ggCatepillar.default=function(x,yvar,xvar,group=NULL,interactive=FALSE,digits=1)
     C=xvar
     if(is.null(B)){
         dat=summarySE(df,A,C)
-        dat$tooltip=""
+        dat$tooltip="all"
         dat$label=paste0(dat[[C]],"<br>",round(dat[[A]],digits))
     } else if(B=="None") {
         dat=summarySE(df,A,C)
-        dat$tooltip=""
+        dat$tooltip="all"
         dat$label=paste0(dat[[C]],"<br>",round(dat[[A]],digits))
     } else {
         dat=summarySE(df,A,c(B,C))
@@ -94,8 +94,8 @@ ggCatepillar.default=function(x,yvar,xvar,group=NULL,interactive=FALSE,digits=1)
 
     } else p<-ggplot(data=dat,aes_string(x=C,y=A,group=B,colour=B))
 
-    p<-p+ geom_path_interactive(aes(tooltip=tooltip,data_id=id),position=position_dodge(width=mywidth))+
-        geom_point_interactive(aes(tooltip=label,data_id=id),size=4,position=position_dodge(width=mywidth))
+    p<-p+ geom_path_interactive(aes_string(tooltip="tooltip",data_id="id"),position=position_dodge(width=mywidth))+
+        geom_point_interactive(aes_string(tooltip="label",data_id="id"),size=4,position=position_dodge(width=mywidth))
     p
     p<-p+eval(parse(text=paste0("geom_errorbar(aes(ymin=",A,"-se,ymax=",
                                 A,"+se),width=",mywidth,",
@@ -173,23 +173,25 @@ ggEffect.formula <-function(x,data,...){
 #'@param interactive A logical value. If TRUE, an interactive plot will be returned
 #'
 #'@return An interactive plot showing interaction
+#'@import ggplot2
 #'@examples
 #'data(mtcars)
 #'fit=lm(mpg~wt*hp,data=mtcars)
-#'#ggEffect(fit,use.rownames=TRUE)
-#'#ggEffect(fit,use.rownames=TRUE,interactive=TRUE)
-#'#ggEffect(fit,no=2)
-#'#require(moonBook)
-#'#fit2=lm(NTAV~age*smoking,data=radial)
-#'#ggEffect(fit2,interactive=TRUE)
-#'#fit3=lm(age~sex*smoking,data=acs)
-#'#ggEffect(fit3,interactive=TRUE)
+#'require(ggplot2)
+#'ggEffect(fit,use.rownames=TRUE)
+#'ggEffect(fit,use.rownames=TRUE,interactive=TRUE)
+#'ggEffect(fit,no=2)
+#'require(moonBook)
+#'fit2=lm(NTAV~age*smoking,data=radial)
+#'ggEffect(fit2,interactive=TRUE)
+#'fit3=lm(age~sex*smoking,data=acs)
+#'ggEffect(fit3,interactive=TRUE)
 ggEffect.lm<-function(x,
                   no=1,
                   probs=c(0.10,0.5,0.90),
                   point=TRUE,
                   xvalue=NULL,
-                  digits=1,
+                  digits=2,
                   use.rownames=FALSE,
                   interactive=FALSE)
     {
@@ -205,8 +207,12 @@ ggEffect.lm<-function(x,
     } else if(count<3){
         if(use.rownames) {
             df$label=rownames(df)
-        } else df$label=paste0(name[1+no],"=",round(df[[name[1+no]]],digits),"<br>",
+        } else {
+            df$id=1:nrow(df)
+            df$label=paste0(df$id,"<br>",name[4-count],"=",df[[name[4-count]]],"<br>",
+                            name[1+no],"=",round(df[[name[1+no]]],digits),"<br>",
                              name[1],"=",round(df[[name[1]]],digits))
+        }
         df$data_id=1:nrow(df)
         # str(df)
         # coef
@@ -237,14 +243,15 @@ ggEffect.lm<-function(x,
         intercept2=rep(df1$intercept,2)
         df2=data.frame(name2,x2,y2,slope2,intercept2)
         colnames(df2)=c(color,"x","y","slope","intercept")
-        df2$tooltip=paste0(color,"=",df2[[color]],"<br>y=",round(df2$slope,digits),"*x +",round(df2$intercept,digits))
+        df2$tooltip=paste0("for ",color,"=",df2[[color]],"<br>y=",round(df2$slope,digits),"*x +",round(df2$intercept,digits))
         df2$data_id=1:nrow(df2)
-        # df2
-        p<-ggplot(data=df,aes_string(x=name[1+count],y=name[1],colour=color))+
+        # str(df)
+        # str(df2)
+        p<-ggplot(data=df,aes_string(x=name[1+count],y=name[1],colour=color,tooltip="tooltip",data_id="data_id"))+
             #stat_smooth(method="lm",se=se,fullrange=TRUE)+
             geom_path_interactive(data=df2,
-                                  aes_string(x="x",y="y",tooltip="tooltip",data_id="data_id"))
-        if(point) p<-p+ geom_point_interactive(aes(tooltip=label,data_id=data_id))
+                                  aes_string(x="x",y="y"),size=1)
+        if(point) p<-p+ geom_point_interactive(aes(tooltip=label))
 
         # p1<-ggplot(data=df,aes_string(x=name[1+count],y=name[1],colour=color))+
         #     stat_smooth(method="lm",se=se,fullrange=TRUE)+
@@ -254,10 +261,14 @@ ggEffect.lm<-function(x,
         # p1
     } else {
         (z=name[4-no])
-        if(use.rownames) df$label=rownames(df)
-        else df$label=paste0(name[1+no],"=",df[[name[1+no]]],"<br>",name[1],"=",df[[name[1]]])
+        color=name[4-count]
         df$data_id=1:nrow(df)
-        # print(df)
+        if(use.rownames){
+            df$label=rownames(df)
+        } else {
+            df$label=paste0(df$data_id,"<br>",z,"=",df[[z]],"<br>",name[1+no],"=",df[[name[1+no]]],"<br>",name[1],"=",df[[name[1]]])
+        }
+        #str(df)
         if(is.null(xvalue)) {
             A=quantile(df[[4-no]],probs,na.rm=TRUE)
         } else A=xvalue
@@ -266,6 +277,7 @@ ggEffect.lm<-function(x,
         intercept=coef[1]+coef[4-no]*A
         slope=coef[1+no]+coef[4]*A
         xvar=df[[name[1+no]]]
+
         xmin=rep(min(xvar),count)
         xmax=rep(max(xvar),count)
         ymin=xmin*slope+intercept
@@ -280,25 +292,37 @@ ggEffect.lm<-function(x,
         df2=data.frame(name2,x2,y2,slope2,intercept2)
         colnames(df2)=c(z,"x","y","slope","intercept")
         df2[[z]]=factor(df2[[z]])
-        df2$tooltip=paste0(z,"=",df2[[z]],"<br>y=",round(df2$slope,1),"*x +",round(df2$intercept,1))
+        df2$tooltip=paste0("for ",z,"=",df2[[z]],"<br>y=",round(df2$slope,digits),"*x +",round(df2$intercept,digits))
         df2$data_id=1:nrow(df2)
         # print(df2)
         # str(df)
-        # str(df2)
+        str(df2)
         # name
         #df
-        #str(df)
-        p<-ggplot(data=df,aes_string(x=name[1+no],y=name[1],tooltip="label",
-                                     data_id="data_id"))+
-            geom_path_interactive(data=df2,
-                                  aes_string(x="x",y="y",tooltip="tooltip",data_id="data_id",color=z))
+        str(df)
+
+        if(length(unique(df[[z]]))<6) {
+            df[[z]]=factor(df[[z]])
+            p<-ggplot(data=df,aes_string(x=name[1+no],y=name[1],tooltip="label",
+                                         data_id="data_id",colour=z))
+        } else {
+            p<-ggplot(data=df,aes_string(x=name[1+no],y=name[1],tooltip="label",
+                                         data_id="data_id"))
+        }
+
+        p<-p+ geom_path_interactive(data=df2,
+                                  aes_string(x="x",y="y",tooltip="tooltip",color=z),size=1)
 
         if(point) p<-p + geom_point_interactive()
 
     }
-        if(interactive) p<-ggiraph(code=print(p),
-                                   hover_css="r:6px;fill:orange;cursor:pointer;stroke-width:4px;",
-                                   zoom_max=10)
+    if(interactive){
+        tooltip_css <- "background-color:white;font-style:italic;padding:10px;border-radius:10px 20px 10px 20px;"
+        #hover_css="fill-opacity=.3;cursor:pointer;stroke:gold;"
+        hover_css="r:4px;cursor:pointer;stroke-width:6px;"
+        if(interactive) p<-ggiraph(code=print(p),tooltip_extra_css=tooltip_css,tooltip_opacity=.75,
+                                   zoom_max=10,hover_css=hover_css)
+    }
     p
 }
 

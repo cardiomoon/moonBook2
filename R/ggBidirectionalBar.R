@@ -115,16 +115,19 @@ get_popdata <- function(country, year) {
 #'@param right  A character vector of column names be assigned to right-sided bar
 #'@param label A character vector of column names be assigned to the label
 #'@param title Plot title
+#'@param legendposition An integer specifying the legend position. One of among c(1,2,3,4). Default value is 1.
 #'@param interactive A logical value. If TRUE, an interactive plot will be returned
 #'
 #'@return An interactive interactive bidirectional bar plot
 #'
 #'@examples
-#'#KS2016=get_popdata("KS",2016)
-#'#ggBidirectionalBar(data=KS2016,left="Male",right="Female",label="Age")
-#'#ggBidirectionalBar(data=KS2016,left="Male",right="Female",label="Age",interactive=TRUE)
+#'require(ggplot2)
+#'KS2016=get_popdata("KS",2016)
+#'ggBidirectionalBar(data=KS2016,left="Male",right="Female",label="Age")
+#'ggBidirectionalBar(data=KS2016,left="Male",right="Female",label="Age",legendposition=2)
+#'ggBidirectionalBar(data=KS2016,left="Male",right="Female",label="Age",interactive=TRUE)
 ggBidirectionalBar=function(data,left=NULL,right=NULL,label=NULL,
-                            title="",interactive=FALSE){
+                            title="",legendposition=1,interactive=FALSE){
 
 
     data[[left]] <- -1 * data[[left]]
@@ -134,6 +137,10 @@ ggBidirectionalBar=function(data,left=NULL,right=NULL,label=NULL,
     longdf$xmax=as.numeric(longdf[[label]])-0.05
     longdf$id=as.character(1:nrow(longdf))
     longdf$tooltip=paste0(longdf$variable,"(",longdf[[label]],")",abs(longdf$value))
+    if(legendposition==1) legendPosition=c(0.15,0.92)
+    else if(legendposition==2) legendPosition=c(0.85,0.92)
+    else if(legendposition==3) legendPosition=c(0.15,0.08)
+    else legendPosition=c(0.85,0.08)
 
 
             p<-ggplot(longdf, aes_string(xmin="xmin",xmax="xmax"
@@ -143,7 +150,7 @@ ggBidirectionalBar=function(data,left=NULL,right=NULL,label=NULL,
                 geom_rect_interactive(aes(ymin=value,ymax=0),data=subset(longdf, variable == left), stat = "identity",alpha=0.7)+
                 coord_flip() +
                 scale_fill_brewer(palette = "Set1") +
-                theme_bw()+theme(legend.position=c(0.15,0.92))+
+                theme_bw()+theme(legend.position=legendPosition)+
                 guides(fill=guide_legend(title=NULL,reverse=TRUE))+
                 scale_x_continuous(breaks=1:length(data[[label]]),labels=levels(data[[label]]))+
                 scale_y_continuous(labels=human_num2)+ylab("")+ggtitle(title)
@@ -151,6 +158,73 @@ ggBidirectionalBar=function(data,left=NULL,right=NULL,label=NULL,
             p
 
 }
+
+#'Draw a static bidirectional bar plot
+#'@param data A data.frame
+#'@param left  A character vector of column names be assigned to left-sided bar
+#'@param right  A character vector of column names be assigned to right-sided bar
+#'@param label A character vector of column names be assigned to the label
+#'@param width An integer vector specifying the relative width of two barplots.
+#'
+#'@return A static bidirectional bar plot
+#'
+#'@examples
+#'require(grid)
+#'require(ggplot2)
+#'KS2016=get_popdata("KS",2016)
+#'ggBidirectionalBar2(data=KS2016,left="Male",right="Female",label="Age")
+ggBidirectionalBar2=function(data,left=NULL,right=NULL,label=NULL,width=c(0.46,0.55),title=""){
+
+    # mode == 1 :
+    # mode == 2 :two separate plot
+    data[[left]] <- -1 * data[[left]]
+    data[[label]] <- factor(data[[label]],levels=data[[label]])
+    longdf <- melt(data,id.vars=label )
+
+        p1<- ggplot(data=subset(longdf, variable == left), aes_string(y = "value", x = label)) +
+            geom_bar(stat = "identity",alpha=0.7,fill="blue") +coord_flip()+
+            annotate("text",x=Inf,y=-Inf,hjust=-0.2,vjust=2,label=left,color="blue")+
+            theme_bw()+
+            theme(axis.text.y=element_blank(),axis.ticks.y=element_blank(),
+                  axis.title.y=element_blank(),axis.title.x=element_blank())
+        p1<-p1+ scale_fill_brewer(palette = "Set1") +
+            scale_y_continuous(labels=human_num2)
+        #p1<-ggdraw(switch_axis_position(p1+theme_bw()+theme(axis.text.y=element_blank())+xlab("")+ylab(""), axis = 'y'))
+
+        p2<- ggplot(data=subset(longdf, variable == right), aes_string(y = "value", x = label)) +
+            geom_bar(stat = "identity",alpha=0.7,fill="red")+
+            annotate("text",x=Inf,y=Inf,hjust=1.2,vjust=2,label=right,color="red")+
+            coord_flip() +
+            scale_fill_brewer(palette = "Set1") +
+            theme_bw()+
+            theme(legend.position=c(0.15,0.92),axis.ticks.y=element_blank(),
+                  axis.title.y=element_blank(),axis.title.x=element_blank())+
+            guides(fill=guide_legend(title=NULL,reverse=TRUE))+
+            scale_y_continuous(labels=human_num2)+ylab("")
+
+        wid<-width
+
+        p=list(p1,p2)
+        vp=list()
+        vp[[1]]=viewport(x=wid[1]/2,y=0.46,width=wid[1],height=0.92)
+        vp[[2]]=viewport(x=wid[1]+wid[2]/2-0.01,y=0.46,width=wid[2],height=0.92)
+        multiggplot(p=p,vp=vp,title=title)
+
+}
+
+#'Draw a multiggplot
+#'
+#'@param p A list of ggplot
+#'@param vp A list of viewport
+#'@param title Plot title
+multiggplot=function(p,vp,title){
+    fsize=20
+    grid.newpage()
+    for(i in 1:length(p))  print(p[[i]],vp=vp[[i]])
+    grid.text(title,x=0.5,
+              y=0.96,just=c("centre"),gp=gpar(fontsize=fsize))
+}
+
 
 
 #'Get population data and draw popuation pyramid

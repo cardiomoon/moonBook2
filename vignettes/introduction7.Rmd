@@ -1,0 +1,131 @@
+---
+title: "Introduction of R package moonBook2(7)"
+author: "Keon-Woong Moon"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```
+In this vignette, I will show you how to use these functions.
+
+1. ggLogReg() make a scatterplot for logistic regression model
+2. ggCLE() make a cleveland dot plot
+3. ggDot() make a Wilkinson dot plot
+```
+
+## Package installation
+
+Package `moonBook` is available on CRAN and github. Package `moonBook2` is available only on github. Please install moonBook2 package using the following R code.
+
+```{r,eval=FALSE}
+install.packages("devtools")
+devtools::install_github("cardiomoon/moonBook")
+devtools::install_github("cardiomoon/moonBook2")
+```
+
+Because functions in "moonBook2" make interactive plots using package "ggplot2" and "ggiraph", I strongly recommend you to install the latest version of the package "ggplot2" and "ggiraph" from github using following R command. 
+```{r,eval=FALSE}
+devtools::install_github("hadley/ggplot2")
+devtools::install_github("davidgohel/ggiraph")
+```
+
+
+## ggLogReg()
+
+ggLogReg() function draws a scatterplot for logistic regression model
+
+```{r,message=FALSE,comment=NA}
+require(ggplot2)
+require(ggiraph)
+require(moonBook2)
+require(MASS)   # for use of data biopsy
+
+biopsy$malig=ifelse(biopsy$class=='malignant',1,0)
+ggLogReg(biopsy,yvar="malig",xvar="V1",interactive=TRUE)
+```
+
+You can zoom-in and zoom-out the plots with your mouse wheel. 
+
+The other example comes from data 'radial' included in package moonBook.
+```{r,message=FALSE, warning=FALSE}
+require(moonBook)
+ggLogReg(radial,yvar="male",xvar="height",interactive=TRUE)
+```
+
+## ggCLE()
+
+ggCLE() draws a Cleveland dot plot. You can make a cleveland dot plot easily with the famous data `mtcars`. By default, the y axis variables are reordered by x-axis variables.
+
+```{r}
+mtcars$name=rownames(mtcars)
+ggCLE(mtcars,xvar="mpg",yvar="name",interactive=TRUE)
+```
+
+If you want to get a plot in reversing order, set the parameter decreasing TRUE. You can set the colorvar parameter to set the color of segment and dot.
+
+```{r}
+ggCLE(mtcars,xvar="mpg",yvar="name",colorvar="name",interactive=TRUE,decreasing=FALSE)
+```
+
+You can make faceted plot by setting the parameter facetvar. If you want to draw top 20 `mpg` cars, set the parameter no=20.
+
+```{r}
+ggCLE(mtcars,"mpg","name","am","am",no=20,interactive=TRUE)
+```
+
+Next example is tophitters2001 data included in the package gcookbook.
+
+```{r,comment=NA}
+require(gcookbook)
+str(tophitters2001)
+```
+There are records of top 144 hitters in the tophitters2001 data. You can to draw a cleveland dot plot summarizing top 25 hitters(by average) by the following code.  
+
+```{r}
+ggCLE(tophitters2001,xvar="avg",yvar="name",no=25,interactive=TRUE)
+```
+You can make a plot summarizing top 25 `runs batted in` hitters faceted by the league by the following code.
+````{r}
+ggCLE(tophitters2001,xvar="rbi",yvar="name",colorvar="lg",facetvar="lg",no=25,interactive=TRUE)
+```
+
+You can get a static ggplot by set the parameter interactive FALSE(default value).
+```{r,fig.width=7,fig.height=5}
+ggCLE(tophitters2001,xvar="so",yvar="name",colorvar="lg",facetvar="lg",no=25,decreasing=FALSE)
+```
+
+## ggDot()
+
+ggDot() make a Wilkinson dot plot. Like a histogram, you can make a Wilkinson dotplot by selecting x axis variable only.
+
+```{r,fig.height=3,fig.width=4}
+require(moonBook)   # for data radial
+require(gcookbook)  # for data heightweight
+
+ggDot(heightweight,xvar="heightIn")
+```
+
+You can assign a variable to `fillvar` to fill the dots.
+```{r,fig.height=3,fig.width=4}
+ggDot(heightweight,xvar="heightIn",fillvar="sex")
+```
+
+You can make dot plots with boxplots side-by-side by assign a categorial variable as to `xvar` and a continuous variable to `yvar`.
+```{r,fig.height=3,fig.width=4}
+ggDot(heightweight,yvar="heightIn",xvar="sex",fillvar="sex")
+```
+
+You can change the size of dot by setting the parameter binwidth. You can change the direction of stack by setting the stackdir parameter. You can adjust the positions of boxplot and dotplot with parameter position.
+```{r,fig.height=3,fig.width=4,warning=FALSE}
+ggDot(radial,yvar="height",xvar="sex",fillvar="sex",stackdir="down",binwidth=1,position=0.1)
+```
+
+If you wanted to draw a overapped dotplot overaaped with boxplot, set the position 0. 
+```{r,fig.height=3,fig.width=4,warning=FALSE}
+ggDot(radial,yvar="height",xvar="sex",fillvar="sex",boxfill="white",position=0,binwidth=1,boxwidth=0.5)
+
+```

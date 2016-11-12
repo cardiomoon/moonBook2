@@ -8,9 +8,9 @@
 \usage{
 ggScatter(x, ...)
 
-\method{ggScatter}{default}(x, xvar, yvar, colorvar = NULL, se = TRUE,
-  addloess = FALSE, loessse = FALSE, fullrange = FALSE,
-  interactive = FALSE)
+\method{ggScatter}{default}(x, yvar, xvar, colorvar = NULL, facet = FALSE,
+  se = TRUE, method = "auto", fullrange = FALSE, cut_number = 3,
+  tooltip = NULL, interactive = FALSE, ...)
 
 \method{ggScatter}{formula}(x, data, ...)
 }
@@ -19,17 +19,13 @@ ggScatter(x, ...)
 
 \item{...}{other arguments passed on to ggScatter.defalut}
 
-\item{xvar}{A character string of column name be used as a x-axis variable}
-
 \item{yvar}{A character string of column name be used as a y-axis variable.}
+
+\item{xvar}{A character string of column name be used as a x-axis variable}
 
 \item{colorvar}{A character string of column name be used as a colour variable. Default value is NULL}
 
 \item{se}{Logical. display confidence interval around linear regression? (TRUE by default)}
-
-\item{addloess}{Logical. add loess line}
-
-\item{loessse}{Logical. display confidence interval around loess regression? (TRUE by default)}
 
 \item{fullrange}{should the fit span the full range of the plot, or just the data}
 
@@ -38,6 +34,10 @@ ggScatter(x, ...)
 \item{data}{a data.frame}
 
 \item{x}{A data.frame}
+
+\item{addloess}{Logical. add loess line}
+
+\item{loessse}{Logical. display confidence interval around loess regression? (TRUE by default)}
 
 \item{x}{A formula of type y ~ x | B}
 
@@ -56,10 +56,10 @@ Make an interactive scatterplot
 require(moonBook)
 require(ggplot2)
 require(ggiraph)
-ggScatter(iris,xvar="Sepal.Length",yvar="Sepal.Width",se=FALSE,colorvar="Species",interactive=TRUE)
-ggScatter(acs,xvar="height",yvar="weight",colorvar="Dx",se=FALSE,interactive=TRUE)
-ggScatter(iris,xvar="Sepal.Length",yvar="Sepal.Width",addloess=FALSE,colorvar="Species",interactive=TRUE)
-ggScatter(radial,xvar="height",yvar="weight",interactive=TRUE)
+ggScatter(iris,yvar="Sepal.Width",xvar="Sepal.Length",se=FALSE,colorvar="Species",interactive=TRUE)
+ggScatter(acs,yvar="weight",xvar="height",colorvar="Dx",se=FALSE,interactive=TRUE)
+ggScatter(iris,yvar="Sepal.Width",xvar="Sepal.Length",colorvar="Species",interactive=TRUE)
+ggScatter(radial,yvar="NTAV",xvar="age",colorvar="DM",interactive=TRUE)
 require(moonBook)
 ggScatter(weight~height|sex,data=radial,interactive=TRUE)
 ggScatter(weight~height|sex,data=radial,fullrange=TRUE,se=FALSE,interactive=TRUE)

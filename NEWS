@@ -1,3 +1,31 @@
+moonBook2 0.1.7
+===============
+(2016-Nov-9)
+
+* new function "ggLogReg", "ggCLE", "ggDot" added
+
+moonBook2 0.1.6
+================
+(2016-Nov-8)
+
+* new function "ggCor", "ggBoxplot" added
+
+* function "ggPoints"" deleted. Please use "ggScatter" function.
+
+* function "ggBar" recoded to be compatible with ggplot2(>2.1.0.9001)
+
+moonBook2 0.1.5
+================
+
+* new data "ratetable.kor" added
+
+
+moonBook2 0.1.4
+================
+(2016-Jul-13)
+
+* new function "ggBidirectionalBar2","multiggplot" added
+
 moonBook2 0.1.3
 ================
 (2016-Jul-3)

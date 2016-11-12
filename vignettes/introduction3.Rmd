@@ -22,10 +22,9 @@ devtools::install_github("cardiomoon/moonBook2")
 In this vignette, I will show you how to use these functions.
 
 1. PopPyramid(): get population data from internet and make a population pyramid.
-2. ggPoints(): make a scatterplot with/without regression line
-3. ggBar(): make a interactive barplot
-4. ggRose(): make a interactive Rose plot
-5. ggHeatmap(): make a interactive Rose plot
+2. ggBar(): make a interactive barplot
+3. ggRose(): make a interactive Rose plot
+4. ggHeatmap(): make a interactive Rose plot
 
 
 ## PopPyramid() for population pyramid
@@ -54,63 +53,6 @@ PopPyramid("US",2016,interactive=TRUE)  # for United States
 ```
 
 
-## ggPoints() for scatterplot
-
-
-You can make interactive scatter plot by ggPoints(). You can make a scatterplot by two different ways.
-
-
-### by using column name
-```{r,message=FALSE,warning=FALSE,comment=NA,fig.width=5,fig.height=5}
-require(plotly)
-ggPoints(iris,Sepal.Width,Sepal.Length,interactive=TRUE)
-
-```
-
-You can assign a grouping variable to the colour or the fill parameter.
-
-```{r,message=FALSE,warning=FALSE,comment=NA,fig.width=5,fig.height=5}
-ggPoints(iris,Sepal.Width,Sepal.Length,colour="Species",interactive=TRUE )
-```
-
-You can remove the regression line by setting the smooth parameter 'FALSE'.
-```{r,message=FALSE,warning=FALSE,comment=NA,fig.width=5,fig.height=5}
-ggPoints(iris,Sepal.Width,Sepal.Length,colour="Species",smooth=FALSE,interactive=TRUE )
-```
-
-You can adjust the method of regression by setting the method from "auto" to other method and adjust the formula option with formula parameter.
-
-```{r,message=FALSE,warning=FALSE,comment=NA,fig.width=5,fig.height=5}
-
-ggPoints(mtcars,mpg,wt,colour="am",method="lm",formula="y~poly(x,2)",interactive=TRUE)
-```
-
-## by formula
-
-You can use formula as follows.
-
-```{r,message=FALSE,warning=FALSE,comment=NA,fig.width=5,fig.height=5}
-ggPoints(mpg~wt,data=mtcars,interactive=TRUE )
-ggPoints(mpg~wt|am,data=mtcars,interactive=TRUE )
-```
-
-
-For radial artery atherosclerosis data, you can draw scatter plot as follows.
-```{r,message=FALSE,warning=FALSE,comment=NA,fig.width=5,fig.height=5}
-require(car)
-ggPoints(salary~yrs.service|sex,data=Salaries,method="lm",formula="y~poly(x,2)",interactive=TRUE )
-```
-
-If you wanted to add another layers or options, you can make a ggplot without interactive=TRUE(the default value of interactive is FALSE) and add option(s) to the ggplot. 
-
-```{r,message=FALSE,warning=FALSE,comment=NA,fig.width=5,fig.height=5}
-require(car)
-
-p<-ggPoints(salary~yrs.service|sex,data=Salaries,method="lm",formula="y~poly(x,2)")
-p<-p+facet_wrap(~sex)
-p
-ggplotly(p)
-```
 
 ## ggBar() for easy interactive barplot
 

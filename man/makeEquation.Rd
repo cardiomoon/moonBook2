@@ -2,10 +2,7 @@
 % Please edit documentation in R/ggPoints.R
 \name{makeEquation}
 \alias{makeEquation}
-\title{#' Draw scatterplot
-#'
-#'@param x An R object to ggPoints
-ggPoints<-function(x,...) UseMethod("ggPoints")}
+\title{Make a regression equation with regression model}
 \usage{
 makeEquation(fit, digits = 2)
 }
@@ -16,5 +13,8 @@ makeEquation(fit, digits = 2)
 }
 \value{
 a regression equation
+}
+\description{
+Make a regression equation with regression model
 }
 

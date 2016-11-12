@@ -5,7 +5,7 @@
 \title{Draw an interactive bidirectional bar plot}
 \usage{
 ggBidirectionalBar(data, left = NULL, right = NULL, label = NULL,
-  title = "", interactive = FALSE)
+  title = "", legendposition = 1, interactive = FALSE)
 }
 \arguments{
 \item{data}{A data.frame}
@@ -18,6 +18,8 @@ ggBidirectionalBar(data, left = NULL, right = NULL, label = NULL,
 
 \item{title}{Plot title}
 
+\item{legendposition}{An integer specifying the legend position. One of among c(1,2,3,4). Default value is 1.}
+
 \item{interactive}{A logical value. If TRUE, an interactive plot will be returned}
 }
 \value{
@@ -27,8 +29,10 @@ An interactive interactive bidirectional bar plot
 Draw an interactive bidirectional bar plot
 }
 \examples{
-#KS2016=get_popdata("KS",2016)
-#ggBidirectionalBar(data=KS2016,left="Male",right="Female",label="Age")
-#ggBidirectionalBar(data=KS2016,left="Male",right="Female",label="Age",interactive=TRUE)
+require(ggplot2)
+KS2016=get_popdata("KS",2016)
+ggBidirectionalBar(data=KS2016,left="Male",right="Female",label="Age")
+ggBidirectionalBar(data=KS2016,left="Male",right="Female",label="Age",legendposition=2)
+ggBidirectionalBar(data=KS2016,left="Male",right="Female",label="Age",interactive=TRUE)
 }
 

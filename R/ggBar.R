@@ -38,10 +38,13 @@ ggBar=function(data,xvar,fillvar,yvar=NULL,stat="count",position="stack",palette
                width=NULL,digits=1,horizontal=FALSE,yangle=0,
                addlabel=FALSE,polar=FALSE,interactive=FALSE,...){
 
+    # data=result1;xvar="no";fillvar="sex";yvar="N";stat="identity";position="stack";palette=NULL;
+    # width=NULL;digits=1;horizontal=FALSE;yangle=0;
+    # addlabel=FALSE;polar=FALSE;interactive=FALSE;
+    # result1$no=factor(result1$no)
 
-    fillvar=as.character(substitute(fillvar))
-    xvar=as.character(substitute(xvar))
     contmode=0
+    str(result1)
     # print(fillvar)
     # print(xvar)
     # print(yvar)
@@ -82,14 +85,16 @@ ggBar=function(data,xvar,fillvar,yvar=NULL,stat="count",position="stack",palette
 
     df
     a
+    str(a)
+
     if(is.null(width)) width=0.9
     df$xno=as.numeric(factor(df[[1]]))
     df$yno=as.numeric(factor(df[[2]]))
 
-    total=sum(a)
-    (csum=colSums(a))
+    (total=sum(a,na.rm=TRUE))
+    (csum=colSums(a,na.rm=TRUE))
     (csum/total)<0.05
-    (rsum=rowSums(a))
+    (rsum=rowSums(a,na.rm=TRUE))
     (xmax=cumsum(csum))
     (xmin=cumsum(csum)-csum)
     (x=(xmax+xmin)/2)
@@ -121,6 +126,7 @@ ggBar=function(data,xvar,fillvar,yvar=NULL,stat="count",position="stack",palette
     } else{
         for(i in 1:count){
             dfsub=df[df$xno==i,]
+            dfsub<-dfsub[nrow(dfsub):1,]
             dfsub$ratio=round(dfsub$nrow*100/csum[i],digits)
             dfsub$ymax=cumsum(dfsub$nrow)
             dfsub$ymin=dfsub$ymax-dfsub$nrow
@@ -137,14 +143,16 @@ ggBar=function(data,xvar,fillvar,yvar=NULL,stat="count",position="stack",palette
 
     df2$data_id=as.character(1:nrow(df2))
     df2$tooltip=paste0(df2[[xvar]],"<br>",df2[[fillvar]],"<br>",df2$nrow)
-    df2$label=ifelse((df2$csum/total)>0.04,df2$nrow,"")
-    if(position!="dodge") {
+    df2$label=df2$nrow
+    if(position=="fill") {
         df2$tooltip=paste0(df2$tooltip,"(",df2$ratio,"%)")
-        df2$label=ifelse((df2$csum/total)>0.04,paste0(df2$ratio,"%"),"")
+        df2$label=paste0(df2$ratio,"%")
+        #df2$label=ifelse((df2$csum/total)>0.04,paste0(df2$ratio,"%"),"")
     }
 
-    #print(df2)
-
+    print(df2)
+    print(df2$ratio)
+    print(df2$label)
     if(contmode) {
         xlabels=breaks[2:length(breaks)]
         xlabels
@@ -159,15 +167,14 @@ ggBar=function(data,xvar,fillvar,yvar=NULL,stat="count",position="stack",palette
     } else y=df2[df2$xno==1,"y"]
 
 
-    df2
-    xvar
-    fillvar
+
     p<-ggplot(mapping=aes_string(x=xvar,fill=fillvar,y="nrow"),data=df2)+
         # geom_bar(stat="identity")
         # geom_bar_interactive(stat="identity")
         geom_bar_interactive(aes(tooltip=tooltip,data_id=data_id),stat="identity",
                              position=position,width=barwidth,...)
-    p
+
+
 
 
     # if(contmode) p<-p+scale_x_continuous(breaks=xmax,labels=xlabels,limits = c(0,total))
@@ -186,7 +193,13 @@ ggBar=function(data,xvar,fillvar,yvar=NULL,stat="count",position="stack",palette
         } else if(position=="fill") {
              p=p+geom_text(aes(x=df2$xno,y=(df2$y)/100,label=df2$label))
         } else {
-            p=p+geom_text(aes(label=df2$label),position=position_dodge(0.9),vjust=1.5)
+            if(horizontal){
+                p=p+geom_text(aes(label=df2$label),position=position_dodge(0.9),hjust=-0.2)
+                if(position=="dodge")
+                    p<-p+scale_y_continuous(limits=c(0,max(df2$nrow)*1.1))
+            } else{
+                p=p+geom_text(aes(label=df2$label),position=position_dodge(0.9),vjust=-0.5)
+            }
         }
 
     }

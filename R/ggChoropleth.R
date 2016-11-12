@@ -1,74 +1,74 @@
-#'Korean administative area and code
+#' #'Korean administative area and code
+#' #'
+#' #'A dataset
+#' #'
+#' #'  @format A data.frame with 16 rows and 3 columns
+#' #'  \describe{
+#' #'     \item{code}{Korean administative area code}
+#' #'     \item{name}{Korean administative area, level 1}
+#' #'     \item{name2}{abbreviation of area}
+#' #'}
+#' "areacode"
 #'
-#'A dataset
+#' #'Korean administative map data(2010) level 1
+#' #'
+#' #'A dataset
+#' #'
+#' #'  @format A data.frame with 6928 rows and 11 columns
+#' #'  \describe{
+#' #'     \item{id}{Korean administative area code}
+#' #'     \item{long}{longitude}
+#' #'     \item{lat}{latitude}
+#' #'     \item{order}{An integer}
+#' #'     \item{hole}{A logical}
+#' #'     \item{piece}{Factor with 102 levels}
+#' #'     \item{group}{Factor with 186 levels}
+#' #'     \item{SP_ID}{shape id}
+#' #'     \item{FID}{An integer}
+#' #'     \item{code}{Area code}
+#' #'     \item{region}{Region}
+#' #'}
+#' "kormap1"
 #'
-#'  @format A data.frame with 16 rows and 3 columns
-#'  \describe{
-#'     \item{code}{Korean administative area code}
-#'     \item{name}{Korean administative area, level 1}
-#'     \item{name2}{abbreviation of area}
-#'}
-"areacode"
-
-#'Korean administative map data(2010) level 1
+#' #'Korean administative map data(2010) level 2
+#' #'
+#' #'A dataset
+#' #'
+#' #'  @format A data.frame with 16926 rows and 11 columns
+#' #'  \describe{
+#' #'     \item{id}{Korean administative area code}
+#' #'     \item{long}{longitude}
+#' #'     \item{lat}{latitude}
+#' #'     \item{order}{An integer}
+#' #'     \item{hole}{A logical}
+#' #'     \item{piece}{Factor with 37 levels}
+#' #'     \item{group}{Factor with 401 levels}
+#' #'     \item{SP_ID}{shape id}
+#' #'     \item{FID}{An integer}
+#' #'     \item{code}{Area code}
+#' #'     \item{region}{Region}
+#' #'}
+#' "kormap2"
 #'
-#'A dataset
-#'
-#'  @format A data.frame with 6928 rows and 11 columns
-#'  \describe{
-#'     \item{id}{Korean administative area code}
-#'     \item{long}{longitude}
-#'     \item{lat}{latitude}
-#'     \item{order}{An integer}
-#'     \item{hole}{A logical}
-#'     \item{piece}{Factor with 102 levels}
-#'     \item{group}{Factor with 186 levels}
-#'     \item{SP_ID}{shape id}
-#'     \item{FID}{An integer}
-#'     \item{code}{Area code}
-#'     \item{region}{Region}
-#'}
-"kormap1"
-
-#'Korean administative map data(2010) level 2
-#'
-#'A dataset
-#'
-#'  @format A data.frame with 16926 rows and 11 columns
-#'  \describe{
-#'     \item{id}{Korean administative area code}
-#'     \item{long}{longitude}
-#'     \item{lat}{latitude}
-#'     \item{order}{An integer}
-#'     \item{hole}{A logical}
-#'     \item{piece}{Factor with 37 levels}
-#'     \item{group}{Factor with 401 levels}
-#'     \item{SP_ID}{shape id}
-#'     \item{FID}{An integer}
-#'     \item{code}{Area code}
-#'     \item{region}{Region}
-#'}
-"kormap2"
-
-#'Korean administative map data(2010) level 3
-#'
-#'A dataset
-#'
-#'  @format A data.frame with 70711 rows and 11 columns
-#'  \describe{
-#'     \item{id}{Korean administative area code}
-#'     \item{long}{longitude}
-#'     \item{lat}{latitude}
-#'     \item{order}{An integer}
-#'     \item{hole}{A logical}
-#'     \item{piece}{Factor with 11 levels}
-#'     \item{group}{Factor with 3593 levels}
-#'     \item{SP_ID}{shape id}
-#'     \item{FID}{An integer}
-#'     \item{code}{Area code}
-#'     \item{region}{Region}
-#'}
-"kormap3"
+#' #'Korean administative map data(2010) level 3
+#' #'
+#' #'A dataset
+#' #'
+#' #'  @format A data.frame with 70711 rows and 11 columns
+#' #'  \describe{
+#' #'     \item{id}{Korean administative area code}
+#' #'     \item{long}{longitude}
+#' #'     \item{lat}{latitude}
+#' #'     \item{order}{An integer}
+#' #'     \item{hole}{A logical}
+#' #'     \item{piece}{Factor with 11 levels}
+#' #'     \item{group}{Factor with 3593 levels}
+#' #'     \item{SP_ID}{shape id}
+#' #'     \item{FID}{An integer}
+#' #'     \item{code}{Area code}
+#' #'     \item{region}{Region}
+#' #'}
+#' "kormap3"
 
 
 #' Select subdata of data
@@ -122,6 +122,7 @@ area2code <- function(area){
 #' @param map a map maybe a result of map_data()
 #' @param fillvar a column name assigned to a fill variable
 #' @param colors A vector of colours used as a parameter of scale_fill_gradientn()
+#' @param palette A palette name used for discrete fill var
 #' @param map_id a column name used as an id
 #' @param tooltip a column name included in a tooltip
 #' @param facetvar a column name assigned to a facet variable
@@ -139,13 +140,16 @@ area2code <- function(area){
 #'#ggChoropleth(data2,kormap2,fillvar="총인구_명",tooltip="name",interactive=TRUE)
 #'#ggChoropleth(data3,kormap3,fillvar="총인구_명",tooltip="name",interactive=TRUE)
 #'#ggChoropleth(data3,kormap3,fillvar="총인구_명",subarea=c("전라","광주"),interactive=TRUE)
-ggChoropleth=function(data,map,fillvar="총인구_명",colors=c('white','orange','red'),
+ggChoropleth=function(data,map,fillvar="총인구_명",colors=c('white','orange','red'),palette=NULL,
                       map_id="code",tooltip=NULL,facetvar=NULL,subarea=NULL,title="",digits=1,interactive=FALSE,...){
+
+
 
     if(!is.null(subarea)) {
         data=subdata(data,subarea)
         map=subdata(map,subarea)
     }
+
     data$data_id=data[[map_id]]
     if(is.null(tooltip)) {
         if(is.numeric(data[[fillvar]])) data[[fillvar]]=round(data[[fillvar]],digits)
@@ -162,14 +166,26 @@ ggChoropleth=function(data,map,fillvar="총인구_명",colors=c('white','orange'
 
     p<-ggplot(data=data,aes_string(map_id=map_id,fill=fillvar,
                                    data_id="data_id",tooltip="tooltip"))+
-        expand_limits(x=map$long,y=map$lat)+
-        geom_map_interactive(map=map,colour='black',size=0.1,...)+
-        coord_map()+
-        scale_fill_gradientn(colours=mycolors)
+        expand_limits(x=map$long,y=map$lat)+coord_map()
+    p<-p+geom_map_interactive(map=map,colour='black',size=0.1,...)
+    #require(ggiraph)
+    #p<-p+geom_map_interactive(map=map,colour='black',size=0.1)
+    if(is.numeric(data[[fillvar]])) {
+        p<-p+scale_fill_gradientn(colours=mycolors)
+    } else {
+        if(is.null(palette)) {
+            p<-p+scale_colour_gradientn(colours=mycolors)
+        } else {
+            p<-p+scale_fill_brewer(palette)
+        }
+    }
+
+
     if(!is.null(facetvar)) p<-p+facet_wrap(facetvar)
     if(title!="") p<-p+ ggtitle(title)
 
     if(interactive) p<-ggiraph(code=print(p),tooltip_extra_css = tooltip_css,zoom_max=10)
     p
 }
+
 
